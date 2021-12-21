@@ -2,8 +2,8 @@
 
 import torch
 
-from manifolds.base import Manifold
-from utils.math_utils import arcosh, cosh, sinh 
+from GraphZoo.manifolds.base import Manifold
+from GraphZoo.utils.math_utils import arcosh, cosh, sinh 
 
 
 class Hyperboloid(Manifold):

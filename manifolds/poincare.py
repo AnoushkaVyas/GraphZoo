@@ -2,8 +2,8 @@
 
 import torch
 
-from manifolds.base import Manifold
-from utils.math_utils import artanh, tanh
+from GraphZoo.manifolds.base import Manifold
+from GraphZoo.utils.math_utils import artanh, tanh
 
 
 class PoincareBall(Manifold):
