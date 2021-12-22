@@ -1,3 +1,29 @@
+"""
+Trainer class.
+
+    Inputs
+        'lr': (0.01, 'learning rate')
+        'dropout': (0.0, 'dropout probability')
+        'cuda': (-1, 'which cuda device to use (-1 for cpu training)')
+        'epochs': (5000, 'maximum number of epochs to train for')
+        'weight-decay': (0., 'l2 regularization strength')
+        'optimizer': ('Adam', 'which optimizer to use, can be any of [Adam, RiemannianAdam]')
+        'momentum': (0.999, 'momentum in optimizer')
+        'patience': (100, 'patience for early stopping')
+        'seed': (1234, 'seed for training')
+        'log-freq': (1, 'how often to compute print train/val metrics (in epochs)')
+        'eval-freq': (1, 'how often to compute val metrics (in epochs)')
+        'save': (0, '1 to save model and logs and 0 otherwise')
+        'save-dir': (None, 'path to save training logs and model weights (defaults to logs/task/date/run/)')
+        'sweep-c': (0, '')
+        'lr-reduce-freq': (None, 'reduce lr every lr-reduce-freq or None to keep lr constant')
+        'gamma': (0.5, 'gamma for lr scheduler')
+        'print-epoch': (True, '')
+        'grad-clip': (None, 'max norm for gradient clipping, or None for no gradient clipping')
+        'min-epochs': (100, 'do not early stop before min-epochs')
+
+"""
+
 from __future__ import division
 from __future__ import print_function
 
@@ -7,7 +33,6 @@ import logging
 import os
 import pickle
 import time
-
 import numpy as np
 import torch
 import torch.optim as optim

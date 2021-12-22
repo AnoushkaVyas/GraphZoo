@@ -1,4 +1,28 @@
-"""Base model class."""
+"""
+Base model class.
+
+    Inputs
+        'task': ('nc', 'which tasks to train on, can be any of [lp, nc]')
+        'model': ('GCN', 'which encoder to use, can be any of [Shallow, MLP, HNN, GCN, GAT, HyperGCN]')
+        'dim': (128, 'embedding dimension')
+        'manifold': ('Euclidean', 'which manifold to use, can be any of [Euclidean, Hyperboloid, PoincareBall]')
+        'c': (1.0, 'hyperbolic radius, set to None for trainable curvature')
+        'r': (2., 'fermi-dirac decoder parameter for lp')
+        't': (1., 'fermi-dirac decoder parameter for lp')
+        'pretrained-embeddings': (None, 'path to pretrained embeddings (.npy file) for Shallow node classification')
+        'num-layers': (2, 'number of hidden layers in encoder')
+        'bias': (1, 'whether to use bias (1) or not (0)')
+        'act': ('relu', 'which activation function to use (or None for no activation)')
+        'n-heads': (4, 'number of attention heads for graph attention networks, must be a divisor dim')
+        'alpha': (0.2, 'alpha for leakyrelu in graph attention networks')
+        'double-precision': ('0', 'whether to use double precision')
+        'use-att': (0, 'whether to use hyperbolic attention or not')
+        'local-agg': (0, 'whether to local tangent space aggregation or not')
+        'n_classes': (7, 'number of classes in the dataset')
+        'n_nodes': (2708, 'number of nodes in the graph') 
+        'feat_dim': (1433, 'feature dimension of the dataset') 
+
+"""
 
 import numpy as np
 from sklearn.metrics import roc_auc_score, average_precision_score
