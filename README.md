@@ -9,7 +9,7 @@ args = parser.parse_args()
 
 data = gz.dataloader.DataLoader(args, datapath="GraphZoo/data/cora")
 
-model= gz.models.base_models.NCModel(args)
+model= gz.models.NCModel(args)
 
 optimizer = torch.optim.Adam(model.parameters())
 
