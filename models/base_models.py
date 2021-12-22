@@ -31,6 +31,7 @@ class BaseModel(nn.Module):
         self.manifold = getattr(manifolds, self.manifold_name)()
         if self.manifold.name == 'Hyperboloid':
             args.feat_dim = args.feat_dim + 1
+            
         self.nnodes = args.n_nodes
         self.encoder = getattr(encoders, args.model)(self.c, args)
 
@@ -63,10 +64,9 @@ class NCModel(BaseModel):
             self.f1_average = 'micro'
         else:
             self.f1_average = 'binary'
-        if args.pos_weight:
-            self.weights = torch.Tensor([1., 1. / data['labels'][idx_train].mean()])
-        else:
-            self.weights = torch.Tensor([1.] * args.n_classes)
+       
+        self.weights = torch.Tensor([1.] * args.n_classes)
+        
         if not args.cuda == -1:
             self.weights = self.weights.to(args.device)
 
@@ -97,8 +97,6 @@ class LPModel(BaseModel):
     def __init__(self, args):
         super(LPModel, self).__init__(args)
         self.dc = FermiDiracDecoder(r=args.r, t=args.t)
-        self.nb_false_edges = args.nb_false_edges
-        self.nb_edges = args.nb_edges
 
     def decode(self, h, idx):
         if self.manifold_name == 'Euclidean':
@@ -111,7 +109,9 @@ class LPModel(BaseModel):
 
     def compute_metrics(self, embeddings, data, split):
         if split == 'train':
-            edges_false = data[f'{split}_edges_false'][np.random.randint(0, self.nb_false_edges, self.nb_edges)]
+            nb_false_edges = len(data['train_edges_false'])
+            nb_edges = len(data['train_edges'])
+            edges_false = data[f'{split}_edges_false'][np.random.randint(0, nb_false_edges, nb_edges)]
         else:
             edges_false = data[f'{split}_edges_false']
         pos_scores = self.decode(embeddings, data[f'{split}_edges'])

@@ -50,15 +50,6 @@ class Trainer:
         logging.info(f'Using: {self.args.device}')
         logging.info("Using seed {}.".format(self.args.seed))
 
-        # Load data
-        if self.args.task == 'nc':
-            self.args.n_classes = int(self.data['labels'].max() + 1)
-            logging.info(f'Num classes: {self.args.n_classes}')
-        else:
-            self.args.nb_false_edges = len(self.data['train_edges_false'])
-            self.args.nb_edges = len(self.data['train_edges'])
-            
-
         if not self.args.lr_reduce_freq:
             self.args.lr_reduce_freq = self.args.epochs
 
@@ -72,7 +63,7 @@ class Trainer:
         )
         tot_params = sum([np.prod(p.size()) for p in self.model.parameters()])
         logging.info(f"Total number of parameters: {tot_params}")
-        if self.args.cuda is not None and int(self.cuda) >= 0 :
+        if self.args.cuda is not None and int(self.args.cuda) >= 0 :
             os.environ['CUDA_VISIBLE_DEVICES'] = str(self.args.cuda)
             self.model = self.model.to(self.args.device)
             for x, val in self.data.items():
