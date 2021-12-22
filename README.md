@@ -11,7 +11,7 @@ data = gz.dataloader.DataLoader(args, datapath="GraphZoo/data/cora")
 
 model= gz.models.base_models.NCModel(args)
 
-optimizer = gz.optimizers.RiemannianAdam(params=model.parameters())
+optimizer = torch.optim.Adam(model.parameters())
 
 trainer=gz.trainers.Trainer(args,model, optimizer,data)
 
