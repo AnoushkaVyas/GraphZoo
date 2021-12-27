@@ -79,5 +79,6 @@ model2decoder = {
     'HGCN': LinearDecoder,
     'MLP': LinearDecoder,
     'Shallow': LinearDecoder,
+    'Default': LinearDecoder
 }
 

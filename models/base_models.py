@@ -83,7 +83,12 @@ class NCModel(BaseModel):
 
     def __init__(self, args):
         super(NCModel, self).__init__(args)
-        self.decoder = model2decoder[args.model](self.c, args)
+
+        if args.manifold == 'Hyperboloid':
+            self.decoder = model2decoder['Default'](self.c, args)
+        else:
+            self.decoder = model2decoder[args.model](self.c, args)
+
         if args.n_classes > 2:
             self.f1_average = 'micro'
         else:
