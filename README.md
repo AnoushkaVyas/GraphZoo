@@ -2,7 +2,7 @@
 
 ## Introduction
 
-GraphZoo is a training and evaluationframework. It has built-in support for several graph datasets, graph neural networks, and it can operate on different manifolds. With the unified data processing pipeline, simplified model configuration and automatic hyper-parameters tunning features equipped, GraphZoo is flexible and easy to use. The tasks supported by the framework are node classification and link prediction. 
+GraphZoo is a training and evaluation framework for hyperbolic graph methods. It has built-in support for several graph datasets, graph neural networks, and it can operate on different manifolds. With the unified data processing pipeline, simplified model configuration and automatic hyper-parameters tunning features equipped, GraphZoo is flexible and easy to use. The tasks supported by the framework are node classification and link prediction. 
 
 ## Installation
 
@@ -118,3 +118,59 @@ Various flags can be modified in the `config.py` file in the source code.
     'grad-clip': (None, 'max norm for gradient clipping, or None for no gradient clipping'),
     'min-epochs': (100, 'do not early stop before min-epochs')
 ```
+
+## Customizing the Framework
+
+### Adding Custom Dataset
+
+1. Add the dataset files in the `data` folder of the source code.
+2. To run this code on new datasets, please add corresponding data processing and loading in `load_data_nc` and `load_data_lp` functions in `dataloader/dataloader.py` in the source code.
+
+Output format for node classification dataloader is:
+
+```
+data = {'adj_train': adj, 'features': features, 'labels': labels, 'idx_train': idx_train, 'idx_val': idx_val, 'idx_test': idx_test}
+```
+Output format for link prediction dataloader is:
+
+```
+data = {'adj_train': adj_train, 'features': features, ‘train_edges’: train_edges, ‘train_edges_false’: train_edges_false,  ‘val_edges’: val_edges, ‘val_edges_false’: val_edges_false, ‘test_edges’: test_edges, ‘test_edges_false’: test_edges_false, 'adj_train_norm':adj_train_norm}
+```
+
+### Adding Custom Layers
+
+1. Attention layers can be added in `layers/att_layers.py` in the source code by adding a class in the file.
+2. Hyperbolic layers can be added in `layers/hyp_layers.py` in the source code by adding a class in the file.
+3. Other layers like a single GCN layer can be added in `layers/layers.py` in the source code by adding a class in the file.
+
+### Adding Custom Models
+
+1. After adding custom layers, custom models can be added in `models/encoders.py` in the source code by adding a class in the file.
+2. After adding custom layers, custom decoders to calculate the final output can be added in `models/decoders.py` in the source code by adding a class in the file. Default decoder is the `LinearDecoder`.
+
+## Datasets 
+
+The included datasets are:
+
+1. Cora
+2. Pubmed
+3. Disease
+4. Airport
+
+## Models In The Framework
+
+### Shallow Methods (Shallow)
+1. Shallow Euclidean
+2. Shallow Hyperbolic
+3. Shallow Euclidean + Features
+4. Shallow Hyperbolic + Features 
+
+### Neural Network (NN) Methods
+1. Multi-Layer Perceptron (MLP)
+2. Hyperbolic Neural Networks (HNN) 
+
+### Graph Neural Network (GNN) Methods
+1. Graph Convolutional Neural Networks (GCN) 
+2. Graph Attention Networks (GAT)
+3. Hyperbolic Graph Convolutions (HGCN) 
+
