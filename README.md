@@ -6,10 +6,17 @@ GraphZoo is a training and evaluation framework for hyperbolic graph methods. It
 
 ## Installation
 
+### Using Github source:
 ```
 git clone https://github.com/AnoushkaVyas/GraphZoo.git
 cd GraphZoo
 python setup.py install
+```
+
+### Using Pypi:
+
+```
+pip install graphzoo
 ```
 
 ## Getting Started in 60 Seconds
