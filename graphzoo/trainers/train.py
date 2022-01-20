@@ -63,7 +63,7 @@ class Trainer:
             if not self.args.save_dir:
                 dt = datetime.datetime.now()
                 date = f"{dt.year}_{dt.month}_{dt.day}"
-                models_dir = os.path.join('logs/', self.args.dataset, self.args.task,self.args.model, date)
+                models_dir = os.path.join(os.getcwd(), self.args.dataset, self.args.task,self.args.model, date)
                 self.save_dir = get_dir_name(models_dir)
             else:
                 self.save_dir = self.args.save_dir
