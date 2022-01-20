@@ -24,10 +24,13 @@ import torch
 
 
 class DataLoader:
-    def __init__(self,args, datapath):
+    def __init__(self,args, datapath=None):
         self.args=args
         self.datapath=datapath
         self.rawdataloader=LoadRawData()
+
+        if self.datapath is None:
+            self.datapath = os.path.join('graphzoo/data', self.args.dataset)
 
     def dataloader(self):
         if self.args.task == 'nc':

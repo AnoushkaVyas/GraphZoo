@@ -17,13 +17,13 @@ python setup.py install
 To train a graph convolutional network model for node classification task on cora dataset:
 
 ```python
-import GraphZoo as gz
+import graphzoo as gz
 import torch
-from GraphZoo.config import parser
+from graphzoo.config import parser
 
 args = parser.parse_args()
 
-dataloader = gz.dataloader.DataLoader(args, datapath="GraphZoo/data/cora")
+dataloader = gz.dataloader.DataLoader(args)
 
 data=dataloader.dataloader()
 ```
