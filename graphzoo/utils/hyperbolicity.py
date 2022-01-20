@@ -7,7 +7,7 @@ import networkx as nx
 import numpy as np
 from tqdm import tqdm
 
-from utils.data_utils import load_data_lp
+from graphzoo.utils.data_utils import load_data_lp
 
 
 def hyperbolicity_sample(G, num_samples=50000):

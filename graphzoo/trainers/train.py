@@ -37,8 +37,8 @@ import time
 import numpy as np
 import torch
 import torch.optim as optim
-from GraphZoo.models.base_models import BaseModel
-from GraphZoo.utils.train_utils import get_dir_name, format_metrics
+from graphzoo.models.base_models import BaseModel
+from graphzoo.utils.train_utils import get_dir_name, format_metrics
 
 
 class Trainer:

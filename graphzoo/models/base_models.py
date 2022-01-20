@@ -30,12 +30,12 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from GraphZoo.layers.layers import FermiDiracDecoder
-import GraphZoo.layers.hyp_layers as hyp_layers
-from GraphZoo import manifolds
-import GraphZoo.models.encoders as encoders
-from GraphZoo.models.decoders import model2decoder
-from GraphZoo.utils.eval_utils import acc_f1
+from graphzoo.layers.layers import FermiDiracDecoder
+import graphzoo.layers.hyp_layers as hyp_layers
+from graphzoo import manifolds
+import graphzoo.models.encoders as encoders
+from graphzoo.models.decoders import model2decoder
+from graphzoo.utils.eval_utils import acc_f1
 
 
 class BaseModel(nn.Module):

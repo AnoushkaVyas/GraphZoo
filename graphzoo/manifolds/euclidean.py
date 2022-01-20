@@ -1,6 +1,6 @@
 """Euclidean manifold."""
 
-from GraphZoo.manifolds.base import Manifold
+from graphzoo.manifolds.base import Manifold
 
 
 class Euclidean(Manifold):

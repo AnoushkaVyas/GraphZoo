@@ -5,11 +5,11 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from GraphZoo import manifolds
-from GraphZoo.layers.att_layers import GraphAttentionLayer
-import GraphZoo.layers.hyp_layers as hyp_layers
-from GraphZoo.layers.layers import GraphConvolution, Linear, get_dim_act
-import GraphZoo.utils.math_utils as pmath
+from graphzoo import manifolds
+from graphzoo.layers.att_layers import GraphAttentionLayer
+import graphzoo.layers.hyp_layers as hyp_layers
+from graphzoo.layers.layers import GraphConvolution, Linear, get_dim_act
+import graphzoo.utils.math_utils as pmath
 
 
 class Encoder(nn.Module):

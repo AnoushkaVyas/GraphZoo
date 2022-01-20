@@ -1,6 +1,6 @@
 """Riemannian adam optimizer geoopt implementation (https://github.com/geoopt/)."""
 import torch.optim
-from GraphZoo.manifolds import Euclidean, ManifoldParameter
+from graphzoo.manifolds import Euclidean, ManifoldParameter
 
 # in order not to create it at each iteration
 _default_manifold = Euclidean()

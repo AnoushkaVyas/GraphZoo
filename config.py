@@ -1,6 +1,6 @@
 import argparse
 
-from GraphZoo.utils.train_utils import add_flags_from_config
+from graphzoo.utils.train_utils import add_flags_from_config
 
 config_args = {
     'training_config': {

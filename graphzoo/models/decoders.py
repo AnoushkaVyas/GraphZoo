@@ -1,10 +1,10 @@
 """Graph decoders."""
-from GraphZoo import manifolds
+from graphzoo import manifolds
 import torch.nn as nn
 import torch.nn.functional as F
 
-from GraphZoo.layers.att_layers import GraphAttentionLayer
-from GraphZoo.layers.layers import GraphConvolution, Linear
+from graphzoo.layers.att_layers import GraphAttentionLayer
+from graphzoo.layers.layers import GraphConvolution, Linear
 
 
 class Decoder(nn.Module):
