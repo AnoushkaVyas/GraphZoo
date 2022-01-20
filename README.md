@@ -6,22 +6,18 @@ GraphZoo is a training and evaluation framework for hyperbolic graph methods. It
 
 ## Installation
 
-### Using conda
+### From the Github source:
 
-1. Install conda using this [link](https://conda.io/projects/conda/en/latest/user-guide/install/index.html).
-2. git clone https://github.com/AnoushkaVyas/GraphZoo.git
-3. cd GraphZoo
-4. conda env create -f environment.yml
-5. source set_env.sh
+```
 
-### Using pip
+git clone https://github.com/AnoushkaVyas/GraphZoo.git
+cd GraphZoo
+python setup.py install
+```
 
-1. git clone https://github.com/AnoushkaVyas/GraphZoo.git
-2. cd GraphZoo
-3. virtualenv -p [PATH to python3.7 binary] GraphZoo
-4. source GraphZoo/bin/activate
-5. pip install -r requirements.txt
-6. source set_env.sh
+### From Pypi:
+
+pip install graphzoo
 
 ## Getting Started in 60 Seconds
 
