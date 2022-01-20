@@ -34,7 +34,9 @@ from GraphZoo.config import parser
 
 args = parser.parse_args()
 
-data = gz.dataloader.DataLoader(args, datapath="GraphZoo/data/cora")
+dataloader = gz.dataloader.DataLoader(args, datapath="GraphZoo/data/cora")
+
+data=dataloader.dataloader()
 ```
 
 Initialize the model and fine-tune the hyperparameters:
@@ -161,7 +163,7 @@ The included datasets are:
 
 ### Shallow Methods (Shallow)
 1. Shallow Euclidean
-2. Shallow Hyperbolicx
+2. Shallow Hyperbolic
 
 ### Neural Network (NN) Methods
 1. Multi-Layer Perceptron (MLP)
