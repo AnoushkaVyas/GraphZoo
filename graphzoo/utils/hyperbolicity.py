@@ -7,9 +7,6 @@ import networkx as nx
 import numpy as np
 from tqdm import tqdm
 
-from graphzoo.utils.data_utils import load_data_lp
-
-
 def hyperbolicity_sample(G, num_samples=50000):
     curr_time = time.time()
     hyps = []
@@ -34,13 +31,4 @@ def hyperbolicity_sample(G, num_samples=50000):
     print('Time for hyp: ', time.time() - curr_time)
     return max(hyps)
 
-
-if __name__ == '__main__':
-    dataset = 'pubmed'
-    data_path = os.path.join(os.environ['DATAPATH'], dataset)
-    data = load_data_lp(dataset, use_feats=False, data_path=data_path)
-    graph = nx.from_scipy_sparse_matrix(data['adj_train'])
-    print('Computing hyperbolicity', graph.number_of_nodes(), graph.number_of_edges())
-    hyp = hyperbolicity_sample(graph)
-    print('Hyp: ', hyp)
 
