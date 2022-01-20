@@ -7,6 +7,7 @@ config_args = {
         'lr': (0.01, 'learning rate'),
         'dropout': (0.0, 'dropout probability'),
         'cuda': (-1, 'which cuda device to use (-1 for cpu training)'),
+        'device': ('cuda:0', 'which device to use cuda:$devicenumber for GPU or cpu for CPU'),
         'epochs': (5000, 'maximum number of epochs to train for'),
         'weight-decay': (0., 'l2 regularization strength'),
         'momentum': (0.999, 'momentum in optimizer'),
@@ -24,8 +25,8 @@ config_args = {
         'min-epochs': (100, 'do not early stop before min-epochs')
     },
     'model_config': {
-        'task': ('nc', 'which tasks to train on, can be any of [lp, nc]'),
-        'model': ('GCN', 'which encoder to use, can be any of [Shallow, MLP, HNN, GCN, GAT, HyperGCN]'),
+        'task': ('lp', 'which tasks to train on, can be any of [lp, nc]'),
+        'model': ('GCN', 'which encoder to use, can be any of [Shallow, MLP, HNN, GCN, GAT, HGCN]'),
         'dim': (128, 'embedding dimension'),
         'manifold': ('Euclidean', 'which manifold to use, can be any of [Euclidean, Hyperboloid, PoincareBall]'),
         'c': (1.0, 'hyperbolic radius, set to None for trainable curvature'),

@@ -5,6 +5,7 @@ Trainer class.
         'lr': (0.01, 'learning rate')
         'dropout': (0.0, 'dropout probability')
         'cuda': (-1, 'which cuda device to use (-1 for cpu training)')
+        'device': ('cuda:0', 'which device to use cuda:$devicenumber for GPU or cpu for CPU')
         'epochs': (5000, 'maximum number of epochs to train for')
         'weight-decay': (0., 'l2 regularization strength')
         'optimizer': ('Adam', 'which optimizer to use, can be any of [Adam, RiemannianAdam]')
@@ -39,6 +40,7 @@ import torch.optim as optim
 from GraphZoo.models.base_models import BaseModel
 from GraphZoo.utils.train_utils import get_dir_name, format_metrics
 
+
 class Trainer:
     def __init__(self,args,model, optimizer,data):
 
@@ -47,6 +49,7 @@ class Trainer:
         self.optimizer =optimizer
         self.data=data
         self.best_test_metrics = None
+        self.best_emb = None
         self.best_val_metrics = self.model.init_metric_dict()
 
         np.random.seed(self.args.seed)
@@ -54,15 +57,13 @@ class Trainer:
 
         if int(self.args.cuda) >= 0:
             torch.cuda.manual_seed(self.args.seed)
-        self.args.device = 'cuda:' + str(self.args.cuda) if int(self.args.cuda) >= 0 else 'cpu'
-        self.args.patience = self.args.epochs if not self.args.patience else  int(self.args.patience)
     
         logging.getLogger().setLevel(logging.INFO)
         if self.args.save:
             if not self.args.save_dir:
                 dt = datetime.datetime.now()
                 date = f"{dt.year}_{dt.month}_{dt.day}"
-                models_dir = os.path.join(os.environ['LOG_DIR'], self.args.task, date)
+                models_dir = os.path.join(os.environ['LOG_DIR'], self.args.dataset, self.args.task,self.args.model, date)
                 self.save_dir = get_dir_name(models_dir)
             else:
                 self.save_dir = self.args.save_dir
@@ -76,14 +77,14 @@ class Trainer:
         logging.info("Using seed {}.".format(self.args.seed))
 
         if not self.args.lr_reduce_freq:
-            self.args.lr_reduce_freq = self.args.epochs
+            self.lr_reduce_freq = self.args.epochs
 
         # Model and optimizer
         logging.info(str(self.model))
     
         self.lr_scheduler = torch.optim.lr_scheduler.StepLR(
             self.optimizer,
-            step_size=int(self.args.lr_reduce_freq),
+            step_size=int(self.lr_reduce_freq),
             gamma=float(self.args.gamma)
         )
         tot_params = sum([np.prod(p.size()) for p in self.model.parameters()])
@@ -94,12 +95,11 @@ class Trainer:
             for x, val in self.data.items():
                 if torch.is_tensor(self.data[x]):
                     self.data[x] = self.data[x].to(self.args.device)
-        
+  
     def run(self):
 
         t_total = time.time()
         counter = 0
-        best_emb = None
         for epoch in range(self.args.epochs):
             t = time.time()
             self.model.train()
@@ -128,9 +128,9 @@ class Trainer:
                     logging.info(" ".join(['Epoch: {:04d}'.format(epoch + 1), format_metrics(val_metrics, 'val')]))
                 if self.model.has_improved(self.best_val_metrics, val_metrics):
                     self.best_test_metrics = self.model.compute_metrics(embeddings, self.data, 'test')
-                    best_emb = embeddings.cpu()
+                    self.best_emb = embeddings.cpu()
                     if self.args.save:
-                        np.save(os.path.join(self.save_dir, 'embeddings.npy'), best_emb.detach().numpy())
+                        np.save(os.path.join(self.save_dir, 'embeddings.npy'), self.best_emb.detach().numpy())
                     self.best_val_metrics = val_metrics
                     counter = 0
                 else:
@@ -145,12 +145,12 @@ class Trainer:
     def evaluate(self):
         if not self.best_test_metrics:
             self.model.eval()
-            best_emb = self.model.encode(self.data['features'], self.data['adj_train_norm'])
-            self.best_test_metrics = self.model.compute_metrics(best_emb, self.data, 'test')
+            self.best_emb = self.model.encode(self.data['features'], self.data['adj_train_norm'])
+            self.best_test_metrics = self.model.compute_metrics(self.best_emb, self.data, 'test')
         logging.info(" ".join(["Val set results:", format_metrics(self.best_val_metrics, 'val')]))
         logging.info(" ".join(["Test set results:", format_metrics(self.best_test_metrics, 'test')]))
         if self.args.save:
-            np.save(os.path.join(self.save_dir, 'embeddings.npy'), best_emb.cpu().detach().numpy())
+            np.save(os.path.join(self.save_dir, 'embeddings.npy'), self.best_emb.cpu().detach().numpy())
             if hasattr(self.model.encoder, 'att_adj'):
                 filename = os.path.join(self.save_dir, self.args.dataset + '_att_adj.p')
                 pickle.dump(self.model.encoder.att_adj.cpu().to_dense(), open(filename, 'wb'))

@@ -161,9 +161,7 @@ The included datasets are:
 
 ### Shallow Methods (Shallow)
 1. Shallow Euclidean
-2. Shallow Hyperbolic
-3. Shallow Euclidean + Features
-4. Shallow Hyperbolic + Features 
+2. Shallow Hyperbolicx
 
 ### Neural Network (NN) Methods
 1. Multi-Layer Perceptron (MLP)
