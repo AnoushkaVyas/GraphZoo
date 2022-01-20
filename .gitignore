@@ -1,0 +1,5 @@
+*.pyc
+*.log
+.ipynb_checkpoints/
+*.DS_Store
+graphzoo/log/*
