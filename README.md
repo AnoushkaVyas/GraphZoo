@@ -14,11 +14,6 @@ cd GraphZoo
 python setup.py install
 ```
 
-### From Pypi:
-
-```
-pip install graphzoo
-```
 ## Getting Started in 60 Seconds
 
 To train a graph convolutional network model for node classification task on cora dataset:
