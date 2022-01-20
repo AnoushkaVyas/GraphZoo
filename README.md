@@ -9,7 +9,6 @@ GraphZoo is a training and evaluation framework for hyperbolic graph methods. It
 ### From the Github source:
 
 ```
-
 git clone https://github.com/AnoushkaVyas/GraphZoo.git
 cd GraphZoo
 python setup.py install
@@ -17,8 +16,9 @@ python setup.py install
 
 ### From Pypi:
 
+```
 pip install graphzoo
-
+```
 ## Getting Started in 60 Seconds
 
 To train a graph convolutional network model for node classification task on cora dataset:
