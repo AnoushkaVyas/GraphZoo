@@ -6,8 +6,6 @@ GraphZoo is a training and evaluation framework for hyperbolic graph methods. It
 
 ## Installation
 
-### From the Github source:
-
 ```
 git clone https://github.com/AnoushkaVyas/GraphZoo.git
 cd GraphZoo
