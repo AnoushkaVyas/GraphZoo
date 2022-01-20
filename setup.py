@@ -16,11 +16,11 @@ setup(name = "graphzoo",
       url='https://github.com/AnoushkaVyas/GraphZoo.git',
       include_package_data=True,
       install_requires = [
-          'numpy==1.16.2',
-          'scikit-learn==0.20.3',
-          'torch==1.1.0',
-          'torchvision==0.2.2'
-          'networkx==2.2'
+          'numpy>=1.20.1',
+          'scikit-learn>=0.24.1',
+          'torch>=1.10.1',
+          'torchvision>=0.8.2'
+          'networkx>=2.5'
       ],
       classifiers=[
         "Intended Audience :: Developers",
