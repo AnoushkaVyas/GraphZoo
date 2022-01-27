@@ -159,5 +159,5 @@ class Trainer:
             json.dump(vars(self.args), open(os.path.join(self.save_dir, 'config.json'), 'w'))
             torch.save(self.model.state_dict(), os.path.join(self.save_dir, 'model.pth'))
             logging.info(f"Saved model in {self.save_dir}")
-
+        return self.best_test_metrics
 
