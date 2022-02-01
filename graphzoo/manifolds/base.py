@@ -72,6 +72,49 @@ class Manifold(object):
         """Parallel transport of u from the origin to y."""
         raise NotImplementedError
 
+    def retr(self, x: torch.Tensor, u: torch.Tensor, c: torch.Tensor) -> torch.Tensor:
+        """
+        Perform a retraction from point :math:`x` with given direction :math:`u`.
+        Parameters
+        ----------
+        x : torch.Tensor
+            point on the manifold
+        u : torch.Tensor
+            tangent vector at point :math:`x`
+        c: the curvature.
+        Returns
+        -------
+        torch.Tensor
+            transported point
+        """
+        raise NotImplementedError
+
+    def retr_transp(
+        self, x: torch.Tensor, u: torch.Tensor, v: torch.Tensor, c: torch.Tensor
+    ) -> Tuple[torch.Tensor, torch.Tensor]:
+        """
+        Perform a retraction + vector transport at once.
+        Parameters
+        ----------
+        x : torch.Tensor
+            point on the manifold
+        u : torch.Tensor
+            tangent vector at point :math:`x`
+        v : torch.Tensor
+            tangent vector at point :math:`x` to be transported
+        c: the curvature.
+            
+        Returns
+        -------
+        Tuple[torch.Tensor, torch.Tensor]
+            transported point and vectors
+        Notes
+        -----
+        Sometimes this is a far more optimal way to preform retraction + vector transport
+        """
+        y = self.retr(x, u, c)
+        v_transp = self.transp(x, y, v, c)
+        return y, v_transp
 
 class ManifoldParameter(Parameter):
     """
