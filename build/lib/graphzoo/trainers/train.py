@@ -6,7 +6,7 @@ Trainer class.
         'dropout': (0.0, 'dropout probability')
         'cuda': (-1, 'which cuda device to use (-1 for cpu training)')
         'device': ('cuda:0', 'which device to use cuda:$devicenumber for GPU or cpu for CPU')
-        'repeat': (10, 'number of times to repeat the experiment')
+        'repeats': (10, 'number of times to repeat the experiment')
         'optimizer': ('Adam',  'which optimizer to use, can be any of [Adam, RiemannianAdam]')
         'epochs': (5000, 'maximum number of epochs to train for')
         'weight-decay': (0., 'l2 regularization strength')
