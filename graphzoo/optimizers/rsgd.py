@@ -1,4 +1,4 @@
-"""Riemannian  optimizer geoopt implementation (https://github.com/geoopt/)."""
+"""Riemannian sgd optimizer geoopt implementation (https://github.com/geoopt/)."""
 import torch.optim
 from graphzoo.manifolds import Euclidean, ManifoldParameter
 
