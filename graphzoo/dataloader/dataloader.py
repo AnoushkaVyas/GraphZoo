@@ -23,7 +23,7 @@ import numpy as np
 import scipy.sparse as sp
 import torch
 
-def DataLoader(args, datapath=None):
+def DataLoader(args):
 
     if args.datapath is None:
         args.datapath=os.path.join('../../data/',str(args.dataset))
