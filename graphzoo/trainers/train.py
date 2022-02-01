@@ -6,6 +6,8 @@ Trainer class.
         'dropout': (0.0, 'dropout probability')
         'cuda': (-1, 'which cuda device to use (-1 for cpu training)')
         'device': ('cuda:0', 'which device to use cuda:$devicenumber for GPU or cpu for CPU')
+        'repeats': (10, 'number of times to repeat the experiment')
+        'optimizer': ('Adam',  'which optimizer to use, can be any of [Adam, RiemannianAdam]')
         'epochs': (5000, 'maximum number of epochs to train for')
         'weight-decay': (0., 'l2 regularization strength')
         'momentum': (0.999, 'momentum in optimizer')
@@ -33,16 +35,11 @@ import time
 import numpy as np
 import torch
 import torch.optim as optim
-import argparse
 from graphzoo.optimizers.radam import RiemannianAdam
+from graphzoo.config import parser
 from graphzoo.models.base_models import NCModel, LPModel
 from graphzoo.utils.train_utils import get_dir_name, format_metrics
 from graphzoo.dataloader.dataloader import DataLoader
-# from graphzoo.data.cora.load_data import cora_download
-# from graphzoo.data.pubmed.load_data import pubmed_download
-# from graphzoo.data.airport.load_data import airport_download
-# from graphzoo.data.disease_lp.load_data import disease_lp_download
-# from graphzoo.data.disease_nc.load_data import disease_nc_download
 
 class Trainer:
     def __init__(self,args,model, optimizer,data):
@@ -165,81 +162,8 @@ class Trainer:
         return self.best_test_metrics
 
 
-# parser = argparse.ArgumentParser()
-# parser.add_argument('--cuda', type=int, default=-1,
-#                     help='which cuda device to use (-1 for cpu training)')
-# parser.add_argument('--epochs', type=int, default=5000,
-#                     help='maximum number of epochs to train for')
-# parser.add_argument('--repeat', type=int, default=10,
-#                     help='number of times to repeat the experiment')
-# parser.add_argument('--lr', type=float, default=0.01,
-#                     help='initial learning rate')
-# parser.add_argument('--weight_decay', type=float, default=5e-4,
-#                     help='Weight decay (L2 loss on parameters).')
-# parser.add_argument('--dropout', type=float, default=0.,
-#                     help='l2 regularization strength')
-# parser.add_argument('--weight-decay', type=float, default=0.2,
-#                     help='dropout rate (1 - keep probability)')
-# parser.add_argument('--patience', type=int, default=100,
-#                     help='patience for early stopping')
-# parser.add_argument('--momentum', type=float, default=0.999,
-#                     help='momentum in optimizer')
-# parser.add_argument('--seed', type=int, default=1234,
-#                     help='seed for training')
-# parser.add_argument('--log-freq', type=int, default=1, 
-#                     help='how often to compute print train/val metrics (in epochs)')
-# parser.add_argument('--eval-freq', type=int, default=1, 
-#                     help='how often to compute val metrics (in epochs)')
-# parser.add_argument('--save', type=int, default=1, 
-#                     help='1 to save model and logs and 0 otherwise')
-# parser.add_argument('--optimizer', type=str, default='Adam', 
-#                     help='which optimizer to use, can be any of [Adam, RiemannianAdam]')
-# parser.add_argument('--save-dir', type=str, default=None, 
-#                     help='path to save training logs and model weights (defaults to logs/dataset/task/model/date/run/)')
-# parser.add_argument('--lr-reduce-freq', type=int, default=None, 
-#                     help='reduce lr every lr-reduce-freq or None to keep lr constant')
-# parser.add_argument('--gamma', type=float, default=0.5,
-#                     help='gamma for lr scheduler')
-# parser.add_argument('--grad-clip', type=float, default=None,
-#                     help='max norm for gradient clipping, or None for no gradient clipping')
-# parser.add_argument('--dataset', type=str, default='cora', choices=['cora', 'disease_nc', 'disease_lp', 'airport', 'pubmed'], 
-#                     help='which dataset to use')
-# parser.add_argument('--model', type=str, default='GCN',
-#                     choices=['Shallow', 'MLP', 'HNN', 'GCN','GAT','HGCN'], 
-#                     help='which encoder to use, can be any of [Shallow, MLP, HNN, GCN, GAT, HGCN]')
-# parser.add_argument('--min-epochs', type=int, default=100,
-#                     help='do not early stop before min-epochs')
-# parser.add_argument('--task', type=str, default='nc',
-#                     choices=['lp', 'nc'], 
-#                     help='which tasks to train on, can be any of [lp, nc]')
-# parser.add_argument('--dim', type=int, default=128,
-#                     help='embedding dimension')
-# parser.add_argument('--manifold', type=str, default='Euclidean',
-#                     choices=['Euclidean', 'Hyperboloid', 'PoincareBall'], 
-#                     help='which manifold to use, can be any of [Euclidean, Hyperboloid, PoincareBall]')
-# parser.add_argument('--c', type=float, default=1.0,
-#                     help='hyperbolic radius, set to None for trainable curvature')
-
 if __name__ == '__main__':
     args = parser.parse_args()
-    args.device = 'cuda:' + str(args.cuda) if int(args.cuda) >= 0 else 'cpu'
-
-    print(args)
-
-    # if args.dataset == 'cora':
-    #     cora_download(savepath=args.datapath)
-
-    # if args.dataset == 'disease_lp':
-    #     disease_lp_download(savepath=args.datapath)
-
-    # if args.dataset == 'disease_nc':
-    #     disease_nc_download(savepath=args.datapath)
-
-    # if args.dataset == 'airport':
-    #     airport_download(savepath=args.datapath)
-
-    # if args.dataset == 'pubmed':
-    #     pubmed_download(savepath=args.datapath)
 
     data=DataLoader(args,args.datapath)
     result_list=[]

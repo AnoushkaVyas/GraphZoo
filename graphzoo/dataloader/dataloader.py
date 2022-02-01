@@ -4,6 +4,7 @@ Data utils functions for pre-processing and data loading.
 
    Inputs
         'dataset': ('cora', 'which dataset to use')
+        'datapath': (None, 'path to raw data (defaults to ../data/dataset)')
         'val-prop': (0.05, 'proportion of validation edges for link prediction')
         'test-prop': (0.1, 'proportion of test edges for link prediction')
         'use-feats': (1, 'whether to use node features or not')
@@ -22,7 +23,11 @@ import numpy as np
 import scipy.sparse as sp
 import torch
 
-def DataLoader(args, datapath):
+def DataLoader(args, datapath=None):
+
+    if args.datapath is None:
+        args.datapath=os.path.join('../../data/',str(args.dataset))
+        
     if args.task == 'nc':
         data = load_data_nc(args.dataset, args.use_feats, datapath, args.split_seed)
     else:
