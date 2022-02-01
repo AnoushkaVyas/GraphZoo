@@ -165,7 +165,7 @@ class Trainer:
 if __name__ == '__main__':
     args = parser.parse_args()
 
-    data=DataLoader(args,args.datapath)
+    data=DataLoader(args)
     result_list=[]
 
     for i in range(args.repeat):

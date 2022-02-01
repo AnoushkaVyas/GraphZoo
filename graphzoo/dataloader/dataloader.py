@@ -24,14 +24,11 @@ import scipy.sparse as sp
 import torch
 
 def DataLoader(args):
-
-    if args.datapath is None:
-        args.datapath=os.path.join('../../data/',str(args.dataset))
         
     if args.task == 'nc':
-        data = load_data_nc(args.dataset, args.use_feats, datapath, args.split_seed)
+        data = load_data_nc(args.dataset, args.use_feats, args.datapath, args.split_seed)
     else:
-        data = load_data_lp(args.dataset, args.use_feats, datapath)
+        data = load_data_lp(args.dataset, args.use_feats, args.datapath)
         adj = data['adj_train']
         adj_train, train_edges, train_edges_false, val_edges, val_edges_false, test_edges, test_edges_false = mask_edges(
                 adj, args.val_prop, args.test_prop, args.split_seed
