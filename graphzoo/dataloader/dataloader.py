@@ -24,7 +24,6 @@ import scipy.sparse as sp
 import torch
 
 def DataLoader(args):
-        
     if args.task == 'nc':
         data = load_data_nc(args.dataset, args.use_feats, args.datapath, args.split_seed)
     else:
