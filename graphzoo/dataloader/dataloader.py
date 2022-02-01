@@ -4,7 +4,7 @@ Data utils functions for pre-processing and data loading.
 
    Inputs
         'dataset': ('cora', 'which dataset to use')
-        'datapath': (None, 'path to raw data (defaults to ../data/dataset)')
+        'datapath': (None, 'path to raw data')
         'val-prop': (0.05, 'proportion of validation edges for link prediction')
         'test-prop': (0.1, 'proportion of test edges for link prediction')
         'use-feats': (1, 'whether to use node features or not')
