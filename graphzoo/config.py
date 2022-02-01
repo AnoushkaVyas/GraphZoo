@@ -1,11 +1,10 @@
 import argparse
-
 from graphzoo.utils.train_utils import add_flags_from_config
 
 config_args = {
     'training_config': {
-        'lr': (0.01, 'learning rate'),
-        'dropout': (0.0, 'dropout probability'),
+        'lr': (0.01, 'initial learning rate'),
+        'dropout': (0.2, 'dropout probability'),
         'cuda': (-1, 'which cuda device to use (-1 for cpu training)'),
         'device': ('cuda:0', 'which device to use cuda:$devicenumber for GPU or cpu for CPU'),
         'epochs': (5000, 'maximum number of epochs to train for'),
@@ -17,10 +16,8 @@ config_args = {
         'eval-freq': (1, 'how often to compute val metrics (in epochs)'),
         'save': (1, '1 to save model and logs and 0 otherwise'),
         'save-dir': (None, 'path to save training logs and model weights (defaults to logs/dataset/task/model/date/run/)'),
-        'sweep-c': (0, ''),
         'lr-reduce-freq': (None, 'reduce lr every lr-reduce-freq or None to keep lr constant'),
         'gamma': (0.5, 'gamma for lr scheduler'),
-        'print-epoch': (True, ''),
         'grad-clip': (None, 'max norm for gradient clipping, or None for no gradient clipping'),
         'min-epochs': (100, 'do not early stop before min-epochs')
     },

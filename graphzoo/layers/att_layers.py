@@ -1,4 +1,4 @@
-"""Attention layers (some modules are copied from https://github.com/Diego999/pyGAT."""
+"""Attention layers (some modules are copied from https://github.com/Diego999/pyGAT)."""
 import numpy as np
 import torch
 import torch.nn as nn
