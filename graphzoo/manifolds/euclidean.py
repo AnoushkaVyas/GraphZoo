@@ -1,7 +1,8 @@
 """Euclidean manifold."""
 
 from graphzoo.manifolds.base import Manifold
-
+import torch
+from graphzoo.utils.train_utils import broadcast_shapes
 
 class Euclidean(Manifold):
     """
@@ -65,3 +66,10 @@ class Euclidean(Manifold):
 
     def ptransp0(self, x, v, c):
         return x + v
+
+    def retr(self, x: torch.Tensor, u: torch.Tensor) -> torch.Tensor:
+        return x + u
+
+    def transp(self, x: torch.Tensor, y: torch.Tensor, v: torch.Tensor) -> torch.Tensor:
+        target_shape = broadcast_shapes(x.shape, y.shape, v.shape)
+        return v.expand(target_shape)

@@ -1,7 +1,8 @@
 """Base manifold."""
 
 from torch.nn import Parameter
-
+from typing import Tuple
+import torch
 
 class Manifold(object):
     """
@@ -72,7 +73,7 @@ class Manifold(object):
         """Parallel transport of u from the origin to y."""
         raise NotImplementedError
 
-    def retr(self, x: torch.Tensor, u: torch.Tensor, c: torch.Tensor) -> torch.Tensor:
+    def retr(self, x: torch.Tensor, u: torch.Tensor) -> torch.Tensor:
         """
         Perform a retraction from point :math:`x` with given direction :math:`u`.
         Parameters
@@ -81,7 +82,7 @@ class Manifold(object):
             point on the manifold
         u : torch.Tensor
             tangent vector at point :math:`x`
-        c: the curvature.
+
         Returns
         -------
         torch.Tensor
@@ -89,9 +90,26 @@ class Manifold(object):
         """
         raise NotImplementedError
 
+    def transp(self, x: torch.Tensor, y: torch.Tensor, v: torch.Tensor) -> torch.Tensor:
+        r"""
+        Perform vector transport :math:`\mathfrak{T}_{x\to y}(v)`.
+        Parameters
+        ----------
+        x : torch.Tensor
+            start point on the manifold
+        y : torch.Tensor
+            target point on the manifold
+        v : torch.Tensor
+            tangent vector at point :math:`x`
+        Returns
+        -------
+        torch.Tensor
+           transported tensor
+        """
+        raise NotImplementedError
+
     def retr_transp(
-        self, x: torch.Tensor, u: torch.Tensor, v: torch.Tensor, c: torch.Tensor
-    ) -> Tuple[torch.Tensor, torch.Tensor]:
+        self, x: torch.Tensor, u: torch.Tensor, v: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
         """
         Perform a retraction + vector transport at once.
         Parameters
@@ -102,7 +120,6 @@ class Manifold(object):
             tangent vector at point :math:`x`
         v : torch.Tensor
             tangent vector at point :math:`x` to be transported
-        c: the curvature.
             
         Returns
         -------
@@ -112,8 +129,8 @@ class Manifold(object):
         -----
         Sometimes this is a far more optimal way to preform retraction + vector transport
         """
-        y = self.retr(x, u, c)
-        v_transp = self.transp(x, y, v, c)
+        y = self.retr(x, u)
+        v_transp = self.transp(x, y, v)
         return y, v_transp
 
 class ManifoldParameter(Parameter):

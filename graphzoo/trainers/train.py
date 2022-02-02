@@ -36,6 +36,7 @@ import numpy as np
 import torch
 import torch.optim as optim
 from graphzoo.optimizers.radam import RiemannianAdam
+from graphzoo.optimizers.rsgd import RiemannianSGD
 from graphzoo.config import parser
 from graphzoo.models.base_models import NCModel, LPModel
 from graphzoo.utils.train_utils import get_dir_name, format_metrics
@@ -177,7 +178,9 @@ if __name__ == '__main__':
         if args.optimizer=='Adam':
             optimizer = optim.Adam(params=model.parameters(), lr=args.lr,weight_decay=args.weight_decay)
         if args.optimizer =='RiemannianAdam':
-            optimizers=RiemannianAdam(params=model.parameters(), lr=args.lr,weight_decay=args.weight_decay)
+            optimizer=RiemannianAdam(params=model.parameters(), lr=args.lr,weight_decay=args.weight_decay)
+        if args.optimizer =='RiemannianSGD':
+            optimizer=RiemannianSGD(params=model.parameters(), lr=args.lr,weight_decay=args.weight_decay,momentum=args.momentum)
 
         trainer=Trainer(args,model, optimizer,data)
         trainer.run()

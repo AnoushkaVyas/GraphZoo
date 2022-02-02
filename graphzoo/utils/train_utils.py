@@ -1,10 +1,10 @@
 import os
-
 import numpy as np
 import torch
 import torch.nn.functional as F
 import torch.nn.modules.loss
-
+from typing import Tuple
+import itertools
 
 def format_metrics(metrics, split):
     """Format metric in metric dict for logging."""
@@ -92,3 +92,15 @@ def add_flags_from_config(parser, config_dict):
     return parser
 
 
+def broadcast_shapes(*shapes: Tuple[int]) -> Tuple[int]:
+    """Apply numpy broadcasting rules to shapes."""
+    result = []
+    for dims in itertools.zip_longest(*map(reversed, shapes), fillvalue=1):
+        dim: int = 1
+        for d in dims:
+            if dim != 1 and d != 1 and d != dim:
+                raise ValueError("Shapes can't be broadcasted")
+            elif d > dim:
+                dim = d
+        result.append(dim)
+    return tuple(reversed(result))

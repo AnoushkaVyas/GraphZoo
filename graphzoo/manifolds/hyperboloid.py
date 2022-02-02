@@ -151,3 +151,4 @@ class Hyperboloid(Manifold):
         d = x.size(-1) - 1
         return sqrtK * x.narrow(-1, 1, d) / (x[:, 0:1] + sqrtK)
 
+    
