@@ -1,8 +1,9 @@
 # GraphZoo
+> PyTorch version of [GraphZoo](https://github.com/AnoushkaVyas/GraphZoo).
 
-## Introduction
+> Facilitating learning, using, and designing graph processing pipelines/models systematically.
 
-GraphZoo is a training and evaluation framework for hyperbolic graph methods. It has built-in support for several graph datasets, graph neural networks, and it can operate on different manifolds. With the unified data processing pipeline, simplified model configuration and automatic hyper-parameters tunning features equipped, GraphZoo is flexible and easy to use. The tasks supported by the framework are node classification and link prediction. 
+We present a novel framework GraphZoo, that makes learning, using, and designing graph processing pipelines/models systematic by abstraction over the redundant components. The framework contains a powerful library that supports several hyperbolic manifolds and an easy-to-use modular framework to perform graph processing tasks which aids researchers in different components, namely, (i) reproduce evaluation pipelines of state-of-the-art approaches, (ii) design new hyperbolic or Euclidean graph networks and compare them against the state-of-the art approaches on standard benchmarks, (iii) add custom datasets for evaluation, (iv) add new tasks and evaluation criteria. 
 
 ## Installation
 
@@ -21,35 +22,37 @@ pip install graphzoo
 
 ## Getting Started in 60 Seconds
 
-To train a graph convolutional network model for node classification task on cora dataset:
+To train a graph convolutional network model for node classification task on cora dataset, make use of GraphZoo customized loss functions and evaluation metrics for this task.
+
+Prepare input data:
 
 ```python
 import graphzoo as gz
 import torch
 from graphzoo.config import parser
 
-args = parser.parse_args()
-
-dataloader = gz.dataloader.DataLoader(args)
-
-data=dataloader.dataloader()
+params = parser.parse_args()
+params.dataset='cora'
+params.datapath='../data/cora'
+data = gz.dataloader.DataLoader(params)
 ```
 
 Initialize the model and fine-tune the hyperparameters:
 
 ```python
-model= gz.models.NCModel(args)
+params.task='nc'
+params.model='GCN'
+params.manifold='Euclidean'
+params.dim=128
+model= gz.models.NCModel(params)
 ```
 
 `Trainer` is used to control the training flow:
 
 ```python
-optimizer = torch.optim.Adam(model.parameters())
-
-trainer=gz.trainers.Trainer(args,model, optimizer,data)
-
+optimizer = torch.optim.Adam(model.parameters(),lr=params.lr)
+trainer=gz.trainers.Trainer(args,model,optimizer,data)
 trainer.run()
-
 trainer.evaluate()
 ```
 
