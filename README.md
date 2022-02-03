@@ -22,7 +22,7 @@ pip install graphzoo
 
 ## Getting Started in 60 Seconds
 
-To train a graph convolutional network model for node classification task on cora dataset, make use of GraphZoo customized loss functions and evaluation metrics for this task.
+To train a Hyperbolic Graph Convolutional Networks model for node classification task on Cora dataset, make use of GraphZoo APIs customized loss functions and evaluation metrics for this task.
 
 Prepare input data:
 
@@ -41,8 +41,8 @@ Initialize the model and fine-tune the hyperparameters:
 
 ```python
 params.task='nc'
-params.model='GCN'
-params.manifold='Euclidean'
+params.model='HGCN'
+params.manifold='PoincareBall'
 params.dim=128
 model= gz.models.NCModel(params)
 ```
@@ -50,12 +50,18 @@ model= gz.models.NCModel(params)
 `Trainer` is used to control the training flow:
 
 ```python
-optimizer = torch.optim.Adam(model.parameters(),lr=params.lr)
+optimizer = gz.optimizers.RiemannianAdam(params=model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
 trainer=gz.trainers.Trainer(args,model,optimizer,data)
 trainer.run()
 trainer.evaluate()
 ```
+## Getting Started Using Command Line
+To train a Hyperbolic Graph Convolutional Networks model for node classification task on Cora dataset using command line:
 
+```
+cd GraphZoo
+python graphzoo/trainers/train.py --task nc --dataset cora --model HGCN --lr 0.01 --dim 16 --num-layers 2 --act relu --bias 1 --dropout 0.5 --weight-decay 0.001 --manifold PoincareBall --log-freq 5 --cuda 0 --c None
+```
 ## Customizing Input Arguments
 
 Various flags can be modified in the `graphzoo.config` module by the user.
