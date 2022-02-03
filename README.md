@@ -207,15 +207,15 @@ The included datasets are the following and they need to be downloaded from the 
 
 ## Models
 
-### Shallow Methods (Shallow)
+### Shallow Methods 
 1. Shallow Euclidean 
 2. Shallow Hyperbolic
 
-### Neural Network (NN) Methods
+### Neural Network Methods
 1. Multi-Layer Perceptron (MLP)
 2. Hyperbolic Neural Networks (HNN) 
 
-### Graph Neural Network (GNN) Methods
+### Graph Neural Network Methods
 1. Graph Convolutional Neural Networks (GCN) 
 2. Graph Attention Networks (GAT)
 3. Hyperbolic Graph Convolutions (HGCN) 
