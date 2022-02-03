@@ -58,7 +58,7 @@ trainer.evaluate()
 ## Getting Started Using Command Line
 To train a Hyperbolic Graph Convolutional Networks model for node classification task on Cora dataset using command line:
 
-```
+```python
 cd GraphZoo
 python graphzoo/trainers/train.py --task nc --dataset cora --model HGCN --lr 0.01 --dim 16 --num-layers 2 --act relu --bias 1 --dropout 0.5 --weight-decay 0.001 --manifold PoincareBall --log-freq 5 --cuda 0 --c None
 ```
@@ -124,7 +124,7 @@ Various flags can be modified in the `graphzoo.config` module by the user.
     """
 ```
 
-### Training
+### Trainer
 
 ```python
     """
@@ -208,7 +208,7 @@ The included datasets are the following and they need to be downloaded from the 
 ## Models
 
 ### Shallow Methods (Shallow)
-1. Shallow Euclidean
+1. Shallow Euclidean 
 2. Shallow Hyperbolic
 
 ### Neural Network (NN) Methods
@@ -227,3 +227,6 @@ Tutorials
 Documentation
 
 ## License
+[MIT](https://opensource.org/licenses/MIT)
+
+Copyright (c) 2022 Anoushka Vyas
