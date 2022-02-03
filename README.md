@@ -33,7 +33,7 @@ from graphzoo.config import parser
 
 params = parser.parse_args()
 params.dataset='cora'
-params.datapath='../data/cora'
+params.datapath='data/cora'
 data = gz.dataloader.DataLoader(params)
 ```
 
@@ -58,68 +58,107 @@ trainer.evaluate()
 
 ## Customizing Input Arguments
 
-Various flags can be modified in the `config.py` file in the source code.
+Various flags can be modified in the `graphzoo.config` module by the user.
 
 ### DataLoader
 
-```
-    'dataset': ('cora', 'which dataset to use')
-    'datapath': (None, 'path to raw data')
-    'val-prop': (0.05, 'proportion of validation edges for link prediction')
-    'test-prop': (0.1, 'proportion of test edges for link prediction')
-    'use-feats': (1, 'whether to use node features or not')
-    'normalize-feats': (1, 'whether to normalize input node features')
-    'normalize-adj': (1, 'whether to row-normalize the adjacency matrix')
-    'split-seed': (1234, 'seed for data splits (train/test/val)')
+```python
+     """
+    GraphZoo Dataloader
+
+    Input Parameters
+    ----------
+        'dataset': ('cora', 'which dataset to use, can be any of [cora, pubmed, airport, disease_nc, disease_lp] (type: str)')
+        'datapath': (None, 'path to raw data (type: str)')
+        'val-prop': (0.05, 'proportion of validation edges for link prediction (type:float)')
+        'test-prop': (0.1, 'proportion of test edges for link prediction (type: float)')
+        'use-feats': (1, 'whether to use node features (1) or not (0 in case of Shallow methods) (type: int)')
+        'normalize-feats': (1, 'whether to normalize input node features (1) or not (0) (type: int)')
+        'normalize-adj': (1, 'whether to row-normalize the adjacency matrix (1) or not(0) (type: int)')
+        'split-seed': (1234, 'seed for data splits (train/test/val) (type: int)')
+
+    API Input Parameters
+    ----------
+        args: list of above defined input parameters from `graphzoo.config`
+    
+    """
 
 ```
 
 ### Models
 
-```
-    'task': ('nc', 'which tasks to train on, can be any of [lp, nc]')
-    'model': ('GCN', 'which encoder to use, can be any of [Shallow, MLP, HNN, GCN, GAT, HyperGCN]')
-    'dim': (128, 'embedding dimension')
-    'manifold': ('Euclidean', 'which manifold to use, can be any of [Euclidean, Hyperboloid, PoincareBall]')
-    'c': (1.0, 'hyperbolic radius, set to None for trainable curvature')
-    'r': (2., 'fermi-dirac decoder parameter for lp')
-    't': (1., 'fermi-dirac decoder parameter for lp')
-    'pretrained-embeddings': (None, 'path to pretrained embeddings (.npy file) for Shallow node classification')
-    'num-layers': (2, 'number of hidden layers in encoder')
-    'bias': (1, 'whether to use bias (1) or not (0)')
-    'act': ('relu', 'which activation function to use (or None for no activation)')
-    'n-heads': (4, 'number of attention heads for graph attention networks, must be a divisor dim')
-    'alpha': (0.2, 'alpha for leakyrelu in graph attention networks')
-    'double-precision': ('0', 'whether to use double precision')
-    'use-att': (0, 'whether to use hyperbolic attention or not')
-    'local-agg': (0, 'whether to local tangent space aggregation or not')
-    'n_classes': (7, 'number of classes in the dataset')
-    'n_nodes': (2708, 'number of nodes in the graph') 
-    'feat_dim': (1433, 'feature dimension of the dataset') 
+```python
+    """
+    Base model for graph embedding tasks
+
+    Input Parameters
+    ----------
+        'task': ('nc', 'which tasks to train on, can be any of [lp, nc] (type: str)')
+        'model': ('HGCN', 'which encoder to use, can be any of [Shallow, MLP, HNN, GCN, GAT, HGCN] (type: str)')
+        'dim': (128, 'embedding dimension (type: int)')
+        'manifold': ('PoincareBall', 'which manifold to use, can be any of [Euclidean, Hyperboloid, PoincareBall] (type: str)')
+        'c': (1.0, 'hyperbolic radius, set to None for trainable curvature (type: float)')
+        'r': (2.0, 'fermi-dirac decoder parameter for lp (type: float)')
+        't': (1.0, 'fermi-dirac decoder parameter for lp (type: float)')
+        'pretrained-embeddings': (None, 'path to pretrained embeddings (.npy file) for Shallow node classification (type: str)')
+        'num-layers': (2, 'number of hidden layers in encoder (type: int)')
+        'bias': (1, 'whether to use bias (1) or not (0) (type: int)')
+        'act': ('relu', 'which activation function to use or None for no activation (type: str)')
+        'n-heads': (4, 'number of attention heads for graph attention networks, must be a divisor dim (type: int)')
+        'alpha': (0.2, 'alpha for leakyrelu in graph attention networks (type: float)')
+        'use-att': (0, 'whether to use hyperbolic attention (1) or not (0) (type: int)')
+        'local-agg': (0, 'whether to local tangent space aggregation (1) or not (0) (type: int)')
+        'n_classes': (7, 'number of classes in the dataset (type: int)')
+        'n_nodes': (2708, 'number of nodes in the graph (type: int)')
+        'feat_dim': (1433, 'feature dimension of the dataset (type: int)') 
+        
+    API Input Parameters
+    ----------
+        args: list of above defined input parameters from `graphzoo.config`
+    """
 ```
 
 ### Training
 
-```
-    'lr': (0.01, 'learning rate')
-    'dropout': (0.0, 'dropout probability')
-    'cuda': (-1, 'which cuda device to use (-1 for cpu training)')
-    'device': ('cuda:0', 'which device to use cuda:$devicenumber for GPU or cpu for CPU')
-    'repeat': (10, 'number of times to repeat the experiment')
-    'optimizer': ('Adam',  'which optimizer to use, can be any of [Adam, RiemannianAdam]')
-    'epochs': (5000, 'maximum number of epochs to train for')
-    'weight-decay': (0., 'l2 regularization strength')
-    'momentum': (0.999, 'momentum in optimizer')
-    'patience': (100, 'patience for early stopping')
-    'seed': (1234, 'seed for training')
-    'log-freq': (1, 'how often to compute print train/val metrics (in epochs)')
-    'eval-freq': (1, 'how often to compute val metrics (in epochs)')
-    'save': (0, '1 to save model and logs and 0 otherwise')
-    'save-dir': (None, 'path to save training logs and model weights (defaults to logs/task/date/run/)')
-    'lr-reduce-freq': (None, 'reduce lr every lr-reduce-freq or None to keep lr constant')
-    'gamma': (0.5, 'gamma for lr scheduler')
-    'grad-clip': (None, 'max norm for gradient clipping, or None for no gradient clipping')
-    'min-epochs': (100, 'do not early stop before min-epochs')
+```python
+    """
+    GraphZoo Trainer
+
+    Input Parameters
+    ----------
+        'lr': (0.01, 'initial learning rate (type: float)')
+        'dropout': (0.5, 'dropout probability (type: float)')
+        'cuda': (-1, 'which cuda device to use or -1 for cpu training (type: int)')
+        'device': ('cpu', 'which device to use cuda:$devicenumber for GPU or cpu for CPU (type: str)')
+        'repeat': (10, 'number of times to repeat the experiment (type: int)')
+        'optimizer': ('Adam', 'which optimizer to use, can be any of [Adam, RiemannianAdam, RiemannianSGD] (type: str)')
+        'epochs': (5000, 'maximum number of epochs to train for (type:int)')
+        'weight-decay': (0.001, 'l2 regularization strength (type: float)')
+        'momentum': (0.999, 'momentum in optimizer (type: float)')
+        'patience': (100, 'patience for early stopping (type: int)')
+        'seed': (1234, 'seed for training (type: int)')
+        'log-freq': (5, 'how often to compute print train/val metrics in epochs (type: int)')
+        'eval-freq': (1, 'how often to compute val metrics in epochs (type: int)')
+        'save': (0, '1 to save model and logs and 0 otherwise (type: int)')
+        'save-dir': (None, 'path to save training logs and model weights (type: str)')
+        'lr-reduce-freq': (None, 'reduce lr every lr-reduce-freq or None to keep lr constant (type: int)')
+        'gamma': (0.5, 'gamma for lr scheduler (type: float)')
+        'grad-clip': (None, 'max norm for gradient clipping, or None for no gradient clipping (type: float)')
+        'min-epochs': (100, 'do not early stop before min-epochs (type: int)')
+        'betas': ((0.9, 0.999), 'coefficients used for computing running averages of gradient and its square (type: Tuple[float, float])')
+        'eps': (1e-8, 'term added to the denominator to improve numerical stability (type: float)')
+        'amsgrad': (False, 'whether to use the AMSGrad variant of this algorithm from the paper `On the Convergence of Adam and Beyond` (type: bool)')
+        'stabilize': (None, 'stabilize parameters if they are off-manifold due to numerical reasons every ``stabilize`` steps (type: int)')
+        'dampening': (0,'dampening for momentum (type: float)')
+        'nesterov': (False,'enables Nesterov momentum (type: bool)')
+
+    API Input Parameters
+    ----------
+        args: list of above defined input parameters from `graphzoo.config`
+        optimizer: a :class:`optim.Optimizer` instance
+        model: a :class:`BaseModel` instance
+    
+    """
 ```
 
 ## Customizing the Framework
@@ -153,14 +192,14 @@ data = {'adj_train': adj_train, 'features': features, ‘train_edges’: train_e
 
 ## Datasets 
 
-The included datasets are: https://drive.google.com/drive/folders/1wbqwfg_UfbcL49i3_k1ABYRi9hi1Frt1?usp=sharing
-
+The included datasets are the following and they need to be doownloaded from the ![link](https://drive.google.com/drive/folders/1wbqwfg_UfbcL49i3_k1ABYRi9hi1Frt1?usp=sharing
+):
 1. Cora
 2. Pubmed
 3. Disease
 4. Airport
 
-## Models In The Framework
+## Models
 
 ### Shallow Methods (Shallow)
 1. Shallow Euclidean
@@ -175,3 +214,10 @@ The included datasets are: https://drive.google.com/drive/folders/1wbqwfg_UfbcL4
 2. Graph Attention Networks (GAT)
 3. Hyperbolic Graph Convolutions (HGCN) 
 
+
+## References
+
+Tutorials
+Documentation
+
+## License

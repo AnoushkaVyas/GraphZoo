@@ -20,7 +20,7 @@ from graphzoo.dataloader.dataloader import DataLoader
 
 class Trainer:
     """
-    GraphZoo trainer
+    GraphZoo Trainer
 
     Input Parameters
     ----------

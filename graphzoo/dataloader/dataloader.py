@@ -12,7 +12,7 @@ import torch
 def DataLoader(args):
 
     """
-    GraphZoo dataloader
+    GraphZoo Dataloader
 
     Input Parameters
     ----------
