@@ -1,3 +1,4 @@
+"""Utility functions required for training"""
 import os
 import numpy as np
 import torch
@@ -13,7 +14,8 @@ def format_metrics(metrics, split):
 
 
 def get_dir_name(models_dir):
-    """Gets a directory to save the model.
+    """
+    Gets a directory to save the model.
 
     If the directory already exists, then append a new integer to the end of
     it. This method is useful so that we don't overwrite existing models

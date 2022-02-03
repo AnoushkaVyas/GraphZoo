@@ -1,18 +1,16 @@
-"""Hyperboloid manifold."""
-
+"""Hyperboloid manifold"""
 import torch
-
 from graphzoo.manifolds.base import Manifold
 from graphzoo.utils.math_utils import arcosh, cosh, sinh 
-
+from graphzoo.utils.train_utils import broadcast_shapes
 
 class Hyperboloid(Manifold):
     """
-    Hyperboloid manifold class.
+    Hyperboloid manifold class
 
     We use the following convention: -x0^2 + x1^2 + ... + xd^2 = -K
 
-    c = 1 / K is the hyperbolic curvature. 
+    c = 1 / K is the hyperbolic curvature
     """
 
     def __init__(self):
@@ -151,4 +149,9 @@ class Hyperboloid(Manifold):
         d = x.size(-1) - 1
         return sqrtK * x.narrow(-1, 1, d) / (x[:, 0:1] + sqrtK)
 
-    
+    def retr(self, x: torch.Tensor, u: torch.Tensor) -> torch.Tensor:
+        return x + u
+
+    def transp(self, x: torch.Tensor, y: torch.Tensor, v: torch.Tensor) -> torch.Tensor:
+        target_shape = broadcast_shapes(x.shape, y.shape, v.shape)
+        return v.expand(target_shape)

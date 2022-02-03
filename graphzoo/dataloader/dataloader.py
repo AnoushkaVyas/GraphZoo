@@ -1,29 +1,35 @@
-
 """
-Data utils functions for pre-processing and data loading.
-
-   Inputs
-        'dataset': ('cora', 'which dataset to use')
-        'datapath': (None, 'path to raw data')
-        'val-prop': (0.05, 'proportion of validation edges for link prediction')
-        'test-prop': (0.1, 'proportion of test edges for link prediction')
-        'use-feats': (1, 'whether to use node features or not')
-        'normalize-feats': (1, 'whether to normalize input node features')
-        'normalize-adj': (1, 'whether to row-normalize the adjacency matrix')
-        'split-seed': (1234, 'seed for data splits (train/test/val)')
-
+Data utils functions for pre-processing and data loading
 """
-
 import os
 import pickle as pkl
 import sys
-
 import networkx as nx
 import numpy as np
 import scipy.sparse as sp
 import torch
 
 def DataLoader(args):
+
+    """
+    GraphZoo dataloader
+
+    Input Parameters
+    ----------
+        'dataset': ('cora', 'which dataset to use, can be any of [cora, pubmed, airport, disease_nc, disease_lp] (type: str)')
+        'datapath': (None, 'path to raw data (type: str)')
+        'val-prop': (0.05, 'proportion of validation edges for link prediction (type:float)')
+        'test-prop': (0.1, 'proportion of test edges for link prediction (type: float)')
+        'use-feats': (1, 'whether to use node features (1) or not (0 in case of Shallow methods) (type: int)')
+        'normalize-feats': (1, 'whether to normalize input node features (1) or not (0) (type: int)')
+        'normalize-adj': (1, 'whether to row-normalize the adjacency matrix (1) or not(0) (type: int)')
+        'split-seed': (1234, 'seed for data splits (train/test/val) (type: int)')
+
+    API Input Parameters
+    ----------
+        args: list of above defined input parameters from `graphzoo.config`
+    
+    """
     if args.task == 'nc':
         data = load_data_nc(args.dataset, args.use_feats, args.datapath, args.split_seed)
     else:
@@ -129,7 +135,6 @@ def augment(adj, features, normalize_feats=True):
 
 
 # ############### DATA SPLITS #####################################################
-
 
 def mask_edges(adj, val_prop, test_prop, seed):
     np.random.seed(seed)  # get tp edges

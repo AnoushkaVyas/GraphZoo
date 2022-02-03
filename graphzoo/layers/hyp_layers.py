@@ -12,7 +12,7 @@ from graphzoo.layers.att_layers import DenseAtt
 
 def get_dim_act_curv(args):
     """
-    Helper function to get dimension and activation at every layer.
+    Helper function to get dimension and activation at every layer
     :param args:
     :return:
     """
@@ -41,7 +41,7 @@ def get_dim_act_curv(args):
 
 class HNNLayer(nn.Module):
     """
-    Hyperbolic neural networks layer.
+    Hyperbolic neural networks layer
     """
 
     def __init__(self, manifold, in_features, out_features, c, dropout, act, use_bias):
@@ -57,7 +57,7 @@ class HNNLayer(nn.Module):
 
 class HyperbolicGraphConvolution(nn.Module):
     """
-    Hyperbolic graph convolution layer.
+    Hyperbolic graph convolution layer
     """
 
     def __init__(self, manifold, in_features, out_features, c_in, c_out, dropout, act, use_bias, use_att, local_agg):
@@ -77,7 +77,7 @@ class HyperbolicGraphConvolution(nn.Module):
 
 class HypLinear(nn.Module):
     """
-    Hyperbolic linear layer.
+    Hyperbolic linear layer
     """
 
     def __init__(self, manifold, in_features, out_features, c, dropout, use_bias):
@@ -116,7 +116,7 @@ class HypLinear(nn.Module):
 
 class HypAgg(Module):
     """
-    Hyperbolic aggregation layer.
+    Hyperbolic aggregation layer
     """
 
     def __init__(self, manifold, c, in_features, dropout, use_att, local_agg):
@@ -158,7 +158,7 @@ class HypAgg(Module):
 
 class HypAct(Module):
     """
-    Hyperbolic activation layer.
+    Hyperbolic activation layer
     """
 
     def __init__(self, manifold, c_in, c_out, act):

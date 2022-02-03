@@ -1,15 +1,14 @@
-"""Graph decoders."""
+"""Graph decoders"""
 from graphzoo import manifolds
 import torch.nn as nn
 import torch.nn.functional as F
-
 from graphzoo.layers.att_layers import GraphAttentionLayer
 from graphzoo.layers.layers import GraphConvolution, Linear
 
 
 class Decoder(nn.Module):
     """
-    Decoder abstract class for node classification tasks.
+    Decoder abstract class for node classification tasks
     """
 
     def __init__(self, c):
@@ -27,7 +26,7 @@ class Decoder(nn.Module):
 
 class GCNDecoder(Decoder):
     """
-    Graph Convolution Decoder.
+    Graph Convolution Decoder
     """
 
     def __init__(self, c, args):
@@ -39,7 +38,7 @@ class GCNDecoder(Decoder):
 
 class GATDecoder(Decoder):
     """
-    Graph Attention Decoder.
+    Graph Attention Decoder
     """
 
     def __init__(self, c, args):
@@ -50,7 +49,7 @@ class GATDecoder(Decoder):
 
 class LinearDecoder(Decoder):
     """
-    MLP Decoder for Hyperbolic/Euclidean node classification models.
+    MLP Decoder for Hyperbolic/Euclidean node classification models
     """
 
     def __init__(self, c, args):

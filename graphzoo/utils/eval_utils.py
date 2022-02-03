@@ -1,3 +1,4 @@
+"""Evaluation metric for node classification"""
 from sklearn.metrics import average_precision_score, accuracy_score, f1_score
 
 def acc_f1(output, labels, average='binary'):

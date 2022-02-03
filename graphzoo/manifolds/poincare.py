@@ -1,18 +1,16 @@
-"""Poincare ball manifold."""
-
+"""Poincare ball manifold"""
 import torch
-
 from graphzoo.manifolds.base import Manifold
 from graphzoo.utils.math_utils import artanh, tanh
-
+from graphzoo.utils.train_utils import broadcast_shapes
 
 class PoincareBall(Manifold):
     """
-    PoicareBall Manifold class.
+    PoicareBall Manifold class
 
     We use the following convention: x0^2 + x1^2 + ... + xd^2 < 1 / c
 
-    Note that 1/sqrt(c) is the Poincare ball radius.
+    Note that 1/sqrt(c) is the Poincare ball radius
 
     """
 
@@ -143,4 +141,9 @@ class PoincareBall(Manifold):
         sqnorm = torch.norm(x, p=2, dim=1, keepdim=True) ** 2
         return sqrtK * torch.cat([K + sqnorm, 2 * sqrtK * x], dim=1) / (K - sqnorm)
 
-    
+    def retr(self, x: torch.Tensor, u: torch.Tensor) -> torch.Tensor:
+        return x + u
+
+    def transp(self, x: torch.Tensor, y: torch.Tensor, v: torch.Tensor) -> torch.Tensor:
+        target_shape = broadcast_shapes(x.shape, y.shape, v.shape)
+        return v.expand(target_shape)

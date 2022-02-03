@@ -1,10 +1,8 @@
-"""Graph encoders."""
-
+"""Graph encoders"""
 import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-
 from graphzoo import manifolds
 from graphzoo.layers.att_layers import GraphAttentionLayer
 import graphzoo.layers.hyp_layers as hyp_layers
@@ -14,7 +12,7 @@ import graphzoo.utils.math_utils as pmath
 
 class Encoder(nn.Module):
     """
-    Encoder abstract class.
+    Encoder abstract class
     """
 
     def __init__(self, c):
@@ -31,7 +29,7 @@ class Encoder(nn.Module):
 
 class MLP(Encoder):
     """
-    Multi-layer perceptron.
+    Multi-layer perceptron
     """
 
     def __init__(self, c, args):
@@ -49,7 +47,7 @@ class MLP(Encoder):
 
 class HNN(Encoder):
     """
-    Hyperbolic Neural Networks.
+    Hyperbolic Neural Networks
     """
 
     def __init__(self, c, args):
@@ -74,7 +72,7 @@ class HNN(Encoder):
 
 class GCN(Encoder):
     """
-    Graph Convolution Networks.
+    Graph Convolution Networks
     """
 
     def __init__(self, c, args):
@@ -92,7 +90,7 @@ class GCN(Encoder):
 
 class HGCN(Encoder):
     """
-    Hyperbolic-GCN.
+    Hyperbolic-GCN
     """
 
     def __init__(self, c, args):
@@ -123,7 +121,7 @@ class HGCN(Encoder):
 
 class GAT(Encoder):
     """
-    Graph Attention Networks.
+    Graph Attention Networks
     """
 
     def __init__(self, c, args):
@@ -145,8 +143,8 @@ class GAT(Encoder):
 
 class Shallow(Encoder):
     """
-    Shallow Embedding method.
-    Learns embeddings or loads pretrained embeddings and uses an MLP for classification.
+    Shallow Embedding method
+    Learns embeddings or loads pretrained embeddings and uses an MLP for classification
     """
 
     def __init__(self, c, args):

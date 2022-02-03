@@ -1,35 +1,11 @@
 """
-Base model class.
-
-    Inputs
-        'task': ('nc', 'which tasks to train on, can be any of [lp, nc]')
-        'model': ('GCN', 'which encoder to use, can be any of [Shallow, MLP, HNN, GCN, GAT, HyperGCN]')
-        'dim': (128, 'embedding dimension')
-        'manifold': ('Euclidean', 'which manifold to use, can be any of [Euclidean, Hyperboloid, PoincareBall]')
-        'c': (1.0, 'hyperbolic radius, set to None for trainable curvature')
-        'r': (2., 'fermi-dirac decoder parameter for lp')
-        't': (1., 'fermi-dirac decoder parameter for lp')
-        'pretrained-embeddings': (None, 'path to pretrained embeddings (.npy file) for Shallow node classification')
-        'num-layers': (2, 'number of hidden layers in encoder')
-        'bias': (1, 'whether to use bias (1) or not (0)')
-        'act': ('relu', 'which activation function to use (or None for no activation)')
-        'n-heads': (4, 'number of attention heads for graph attention networks, must be a divisor dim')
-        'alpha': (0.2, 'alpha for leakyrelu in graph attention networks')
-        'double-precision': ('0', 'whether to use double precision')
-        'use-att': (0, 'whether to use hyperbolic attention or not')
-        'local-agg': (0, 'whether to local tangent space aggregation or not')
-        'n_classes': (7, 'number of classes in the dataset')
-        'n_nodes': (2708, 'number of nodes in the graph') 
-        'feat_dim': (1433, 'feature dimension of the dataset') 
-
+Base model class
 """
-
 import numpy as np
 from sklearn.metrics import roc_auc_score, average_precision_score
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-
 from graphzoo.layers.layers import FermiDiracDecoder
 import graphzoo.layers.hyp_layers as hyp_layers
 from graphzoo import manifolds
@@ -40,7 +16,32 @@ from graphzoo.utils.eval_utils import acc_f1
 
 class BaseModel(nn.Module):
     """
-    Base model for graph embedding tasks.
+    Base model for graph embedding tasks
+
+    Input Parameters
+    ----------
+        'task': ('nc', 'which tasks to train on, can be any of [lp, nc] (type: str)')
+        'model': ('HGCN', 'which encoder to use, can be any of [Shallow, MLP, HNN, GCN, GAT, HGCN] (type: str)')
+        'dim': (128, 'embedding dimension (type: int)')
+        'manifold': ('PoincareBall', 'which manifold to use, can be any of [Euclidean, Hyperboloid, PoincareBall] (type: str)')
+        'c': (1.0, 'hyperbolic radius, set to None for trainable curvature (type: float)')
+        'r': (2.0, 'fermi-dirac decoder parameter for lp (type: float)')
+        't': (1.0, 'fermi-dirac decoder parameter for lp (type: float)')
+        'pretrained-embeddings': (None, 'path to pretrained embeddings (.npy file) for Shallow node classification (type: str)')
+        'num-layers': (2, 'number of hidden layers in encoder (type: int)')
+        'bias': (1, 'whether to use bias (1) or not (0) (type: int)')
+        'act': ('relu', 'which activation function to use or None for no activation (type: str)')
+        'n-heads': (4, 'number of attention heads for graph attention networks, must be a divisor dim (type: int)')
+        'alpha': (0.2, 'alpha for leakyrelu in graph attention networks (type: float)')
+        'use-att': (0, 'whether to use hyperbolic attention (1) or not (0) (type: int)')
+        'local-agg': (0, 'whether to local tangent space aggregation (1) or not (0) (type: int)')
+        'n_classes': (7, 'number of classes in the dataset (type: int)')
+        'n_nodes': (2708, 'number of nodes in the graph (type: int)')
+        'feat_dim': (1433, 'feature dimension of the dataset (type: int)') 
+        
+    API Input Parameters
+    ----------
+        args: list of above defined input parameters from `graphzoo.config`
     """
 
     def __init__(self, args):
@@ -78,7 +79,7 @@ class BaseModel(nn.Module):
 
 class NCModel(BaseModel):
     """
-    Base model for node classification task.
+    Base model for node classification task
     """
 
     def __init__(self, args):
@@ -116,7 +117,7 @@ class NCModel(BaseModel):
 
 class LPModel(BaseModel):
     """
-    Base model for link prediction task.
+    Base model for link prediction task
     """
 
     def __init__(self, args):

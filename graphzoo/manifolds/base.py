@@ -1,12 +1,11 @@
-"""Base manifold."""
-
+"""Base manifold"""
 from torch.nn import Parameter
 from typing import Tuple
 import torch
 
 class Manifold(object):
     """
-    Abstract class to define operations on a manifold.
+    Abstract class to define operations on a manifold
     """
 
     def __init__(self):
@@ -14,68 +13,69 @@ class Manifold(object):
         self.eps = 10e-8
 
     def sqdist(self, p1, p2, c):
-        """Squared distance between pairs of points."""
+        """Squared distance between pairs of points"""
         raise NotImplementedError
 
     def egrad2rgrad(self, p, dp, c):
-        """Converts Euclidean Gradient to Riemannian Gradients."""
+        """Converts Euclidean Gradient to Riemannian Gradients"""
         raise NotImplementedError
 
     def proj(self, p, c):
-        """Projects point p on the manifold."""
+        """Projects point p on the manifold"""
         raise NotImplementedError
 
     def proj_tan(self, u, p, c):
-        """Projects u on the tangent space of p."""
+        """Projects u on the tangent space of p"""
         raise NotImplementedError
 
     def proj_tan0(self, u, c):
-        """Projects u on the tangent space of the origin."""
+        """Projects u on the tangent space of the origin"""
         raise NotImplementedError
 
     def expmap(self, u, p, c):
-        """Exponential map of u at point p."""
+        """Exponential map of u at point p"""
         raise NotImplementedError
 
     def logmap(self, p1, p2, c):
-        """Logarithmic map of point p1 at point p2."""
+        """Logarithmic map of point p1 at point p2"""
         raise NotImplementedError
 
     def expmap0(self, u, c):
-        """Exponential map of u at the origin."""
+        """Exponential map of u at the origin"""
         raise NotImplementedError
 
     def logmap0(self, p, c):
-        """Logarithmic map of point p at the origin."""
+        """Logarithmic map of point p at the origin"""
         raise NotImplementedError
 
     def mobius_add(self, x, y, c, dim=-1):
-        """Adds points x and y."""
+        """Adds points x and y"""
         raise NotImplementedError
 
     def mobius_matvec(self, m, x, c):
-        """Performs hyperboic martrix-vector multiplication."""
+        """Performs hyperboic martrix-vector multiplication"""
         raise NotImplementedError
 
     def init_weights(self, w, c, irange=1e-5):
-        """Initializes random weigths on the manifold."""
+        """Initializes random weigths on the manifold"""
         raise NotImplementedError
 
     def inner(self, p, c, u, v=None, keepdim=False):
-        """Inner product for tangent vectors at point x."""
+        """Inner product for tangent vectors at point x"""
         raise NotImplementedError
 
     def ptransp(self, x, y, u, c):
-        """Parallel transport of u from x to y."""
+        """Parallel transport of u from x to y"""
         raise NotImplementedError
 
     def ptransp0(self, x, u, c):
-        """Parallel transport of u from the origin to y."""
+        """Parallel transport of u from the origin to y"""
         raise NotImplementedError
 
     def retr(self, x: torch.Tensor, u: torch.Tensor) -> torch.Tensor:
         """
-        Perform a retraction from point :math:`x` with given direction :math:`u`.
+        Perform a retraction from point :math:`x` with given direction :math:`u`
+        
         Parameters
         ----------
         x : torch.Tensor

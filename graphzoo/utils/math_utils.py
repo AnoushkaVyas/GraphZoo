@@ -1,7 +1,5 @@
-"""Math utils functions."""
-
+"""Math utils functions"""
 import torch
-
 
 def cosh(x, clamp=15):
     return x.clamp(-clamp, clamp).cosh()

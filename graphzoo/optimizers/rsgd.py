@@ -1,5 +1,5 @@
+"""Riemannian Stochastic Gradient Descent optimizer geoopt implementation (https://github.com/geoopt/)."""
 import torch
-import torch.optim.optimizer
 from graphzoo.manifolds import Euclidean, ManifoldParameter
 
 _default_manifold = Euclidean()
@@ -20,14 +20,15 @@ class OptimMixin(object):
         pass
 
     def stabilize(self):
-        """Stabilize parameters if they are off-manifold due to numerical reasons."""
+        """Stabilize parameters if they are off-manifold due to numerical reasons"""
         for group in self.param_groups:
             self.stabilize_group(group)
 
 
 class RiemannianSGD(OptimMixin, torch.optim.Optimizer):
     """
-    Riemannian Stochastic Gradient Descent with the same API as :class:`torch.optim.SGD`.
+    Riemannian Stochastic Gradient Descent with the same API as :class:`torch.optim.SGD`
+
     Parameters
     ----------
     params : iterable
@@ -43,11 +44,14 @@ class RiemannianSGD(OptimMixin, torch.optim.Optimizer):
         dampening for momentum (default: 0)
     nesterov : bool (optional)
         enables Nesterov momentum (default: False)
+
     Other Parameters
     ----------------
     stabilize : int
-        Stabilize parameters if they are off-manifold due to numerical
+        stabilize parameters if they are off-manifold due to numerical
         reasons every ``stabilize`` steps (default: ``None`` -- no stabilize)
+        On the Convergence of Adam and Beyond:
+        https://openreview.net/forum?id=ryQu7f-RZ
     """
 
     def __init__(

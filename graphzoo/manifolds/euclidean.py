@@ -1,12 +1,11 @@
 """Euclidean manifold."""
-
 from graphzoo.manifolds.base import Manifold
 import torch
 from graphzoo.utils.train_utils import broadcast_shapes
 
 class Euclidean(Manifold):
     """
-    Euclidean Manifold class.
+    Euclidean Manifold class
     """
 
     def __init__(self):

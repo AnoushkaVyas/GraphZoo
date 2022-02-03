@@ -1,34 +1,10 @@
-"""
-Trainer class.
-
-    Inputs
-        'lr': (0.01, 'learning rate')
-        'dropout': (0.0, 'dropout probability')
-        'cuda': (-1, 'which cuda device to use (-1 for cpu training)')
-        'device': ('cuda:0', 'which device to use cuda:$devicenumber for GPU or cpu for CPU')
-        'repeat': (10, 'number of times to repeat the experiment')
-        'optimizer': ('Adam',  'which optimizer to use, can be any of [Adam, RiemannianAdam]')
-        'epochs': (5000, 'maximum number of epochs to train for')
-        'weight-decay': (0., 'l2 regularization strength')
-        'momentum': (0.999, 'momentum in optimizer')
-        'patience': (100, 'patience for early stopping')
-        'seed': (1234, 'seed for training')
-        'log-freq': (1, 'how often to compute print train/val metrics (in epochs)')
-        'eval-freq': (1, 'how often to compute val metrics (in epochs)')
-        'save': (0, '1 to save model and logs and 0 otherwise')
-        'save-dir': (None, 'path to save training logs and model weights (defaults to logs/task/date/run/)')
-        'lr-reduce-freq': (None, 'reduce lr every lr-reduce-freq or None to keep lr constant')
-        'gamma': (0.5, 'gamma for lr scheduler')
-        'grad-clip': (None, 'max norm for gradient clipping, or None for no gradient clipping')
-        'min-epochs': (100, 'do not early stop before min-epochs')
-
-"""
-
+"""GraphZoo trainer"""
 from __future__ import division
 from __future__ import print_function
 import datetime
 import json
 import logging
+from operator import ne
 import os
 import pickle
 import time
@@ -43,6 +19,44 @@ from graphzoo.utils.train_utils import get_dir_name, format_metrics
 from graphzoo.dataloader.dataloader import DataLoader
 
 class Trainer:
+    """
+    GraphZoo trainer
+
+    Input Parameters
+    ----------
+        'lr': (0.01, 'initial learning rate (type: float)')
+        'dropout': (0.5, 'dropout probability (type: float)')
+        'cuda': (-1, 'which cuda device to use or -1 for cpu training (type: int)')
+        'device': ('cpu', 'which device to use cuda:$devicenumber for GPU or cpu for CPU (type: str)')
+        'repeat': (10, 'number of times to repeat the experiment (type: int)')
+        'optimizer': ('Adam', 'which optimizer to use, can be any of [Adam, RiemannianAdam, RiemannianSGD] (type: str)')
+        'epochs': (5000, 'maximum number of epochs to train for (type:int)')
+        'weight-decay': (0.001, 'l2 regularization strength (type: float)')
+        'momentum': (0.999, 'momentum in optimizer (type: float)')
+        'patience': (100, 'patience for early stopping (type: int)')
+        'seed': (1234, 'seed for training (type: int)')
+        'log-freq': (5, 'how often to compute print train/val metrics in epochs (type: int)')
+        'eval-freq': (1, 'how often to compute val metrics in epochs (type: int)')
+        'save': (0, '1 to save model and logs and 0 otherwise (type: int)')
+        'save-dir': (None, 'path to save training logs and model weights (type: str)')
+        'lr-reduce-freq': (None, 'reduce lr every lr-reduce-freq or None to keep lr constant (type: int)')
+        'gamma': (0.5, 'gamma for lr scheduler (type: float)')
+        'grad-clip': (None, 'max norm for gradient clipping, or None for no gradient clipping (type: float)')
+        'min-epochs': (100, 'do not early stop before min-epochs (type: int)')
+        'betas': ((0.9, 0.999), 'coefficients used for computing running averages of gradient and its square (type: Tuple[float, float])')
+        'eps': (1e-8, 'term added to the denominator to improve numerical stability (type: float)')
+        'amsgrad': (False, 'whether to use the AMSGrad variant of this algorithm from the paper `On the Convergence of Adam and Beyond` (type: bool)')
+        'stabilize': (None, 'stabilize parameters if they are off-manifold due to numerical reasons every ``stabilize`` steps (type: int)')
+        'dampening': (0,'dampening for momentum (type: float)')
+        'nesterov': (False,'enables Nesterov momentum (type: bool)')
+
+    API Input Parameters
+    ----------
+        args: list of above defined input parameters from `graphzoo.config`
+        optimizer: a :class:`optim.Optimizer` instance
+        model: a :class:`BaseModel` instance
+    
+    """
     def __init__(self,args,model, optimizer,data):
 
         self.args=args
@@ -80,7 +94,6 @@ class Trainer:
         if not self.args.lr_reduce_freq:
             self.lr_reduce_freq = self.args.epochs
 
-        # Model and optimizer
         logging.info(str(self.model))
     
         self.lr_scheduler = torch.optim.lr_scheduler.StepLR(
@@ -98,7 +111,12 @@ class Trainer:
                     self.data[x] = self.data[x].to(self.args.device)
   
     def run(self):
+        """
+        Train model.
 
+        The processes:
+            Run each epoch -> Run scheduler -> Should stop early?
+        """
         t_total = time.time()
         counter = 0
         for epoch in range(self.args.epochs):
@@ -144,6 +162,9 @@ class Trainer:
         logging.info("Total time elapsed: {:.4f}s".format(time.time() - t_total))
 
     def evaluate(self):
+        """
+        Evaluate the model.
+        """
         if not self.best_test_metrics:
             self.model.eval()
             self.best_emb = self.model.encode(self.data['features'], self.data['adj_train_norm'])
@@ -164,8 +185,16 @@ class Trainer:
 
 
 if __name__ == '__main__':
-    args = parser.parse_args()
 
+    """
+    Main function to run command line evaluations
+
+    Note
+    ----------
+    Metrics averaged over repetitions are F1 score for node classification (accuracy for cora and pubmed),
+    ROC for link prediction. Metrics to be averaged can be changed easily in the code.
+    """
+    args = parser.parse_args()
     data=DataLoader(args)
     result_list=[]
 
@@ -176,11 +205,16 @@ if __name__ == '__main__':
             model=LPModel(args)
 
         if args.optimizer=='Adam':
-            optimizer = optim.Adam(params=model.parameters(), lr=args.lr,weight_decay=args.weight_decay)
+            optimizer = optim.Adam(params=model.parameters(), lr=args.lr, weight_decay=args.weight_decay, 
+                                   betas=args.betas, eps=args.eps, amsgrad=args.amsgrad)
         if args.optimizer =='RiemannianAdam':
-            optimizer=RiemannianAdam(params=model.parameters(), lr=args.lr,weight_decay=args.weight_decay)
+            optimizer=RiemannianAdam(params=model.parameters(), lr=args.lr, weight_decay=args.weight_decay,
+                                    betas=args.betas, eps=args.eps ,amsgrad=args.amsgrad, 
+                                    stabilize=args.stabilize)
         if args.optimizer =='RiemannianSGD':
-            optimizer=RiemannianSGD(params=model.parameters(), lr=args.lr,weight_decay=args.weight_decay,momentum=args.momentum)
+            optimizer=RiemannianSGD(params=model.parameters(), lr=args.lr, weight_decay=args.weight_decay,
+                                    momentum=args.momentum, dampening=args.dampening, nesterov=args.nesterov,
+                                    stabilize=args.stabilize)
 
         trainer=Trainer(args,model, optimizer,data)
         trainer.run()

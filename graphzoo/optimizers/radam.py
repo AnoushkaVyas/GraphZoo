@@ -1,4 +1,4 @@
-"""Riemannian adam optimizer geoopt implementation (https://github.com/geoopt/)."""
+"""Riemannian Adam optimizer geoopt implementation (https://github.com/geoopt/)."""
 import torch.optim
 from graphzoo.manifolds import Euclidean, ManifoldParameter
 
@@ -15,8 +15,8 @@ class OptimMixin(object):
         pass
 
     def stabilize(self):
-        """Stabilize parameters if they are off-manifold due to numerical reasons
-        """
+        """Stabilize parameters if they are off-manifold due to numerical reasons"""
+        
         for group in self.param_groups:
             self.stabilize_group(group)
 
@@ -43,7 +43,9 @@ def copy_or_set_(dest, source):
 
 
 class RiemannianAdam(OptimMixin, torch.optim.Adam):
-    r"""Riemannian Adam with the same API as :class:`torch.optim.Adam`
+    """
+    Riemannian Adam with the same API as :class:`torch.optim.Adam`
+
     Parameters
     ----------
     params : iterable
@@ -63,12 +65,13 @@ class RiemannianAdam(OptimMixin, torch.optim.Adam):
         whether to use the AMSGrad variant of this
         algorithm from the paper `On the Convergence of Adam and Beyond`_
         (default: False)
+
     Other Parameters
     ----------------
     stabilize : int
-        Stabilize parameters if they are off-manifold due to numerical
+        stabilize parameters if they are off-manifold due to numerical
         reasons every ``stabilize`` steps (default: ``None`` -- no stabilize)
-    .. _On the Convergence of Adam and Beyond:
+        On the Convergence of Adam and Beyond:
         https://openreview.net/forum?id=ryQu7f-RZ
     """
 

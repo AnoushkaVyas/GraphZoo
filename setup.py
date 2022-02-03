@@ -33,6 +33,6 @@ setup(name = "graphzoo",
         "Topic :: Scientific/Engineering :: Mathematics",
         "Topic :: Software Development :: Libraries :: Python Modules",
         "Topic :: Software Development :: Libraries",
-      ]
-
+      ],
+      license="MIT",
 )
