@@ -192,7 +192,7 @@ data = {'adj_train': adj_train, 'features': features, ‘train_edges’: train_e
 
 ## Datasets 
 
-The included datasets are the following and they need to be doownloaded from the [link](https://drive.google.com/drive/folders/1wbqwfg_UfbcL49i3_k1ABYRi9hi1Frt1?usp=sharing
+The included datasets are the following and they need to be downloaded from the [link](https://drive.google.com/drive/folders/1wbqwfg_UfbcL49i3_k1ABYRi9hi1Frt1?usp=sharing
 ):
 1. Cora
 2. Pubmed
