@@ -223,7 +223,8 @@ The included datasets are the following and they need to be downloaded from the 
 
 ## References
 
-Tutorials
+[Tutorials](https://github.com/AnoushkaVyas/GraphZoo/tree/main/tutorials)
+
 Documentation
 
 ## License
