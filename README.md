@@ -31,7 +31,7 @@ import graphzoo as gz
 import torch
 from graphzoo.config import parser
 
-params = parser.parse_args()
+params = parser.parse_args(args=[])
 params.dataset='cora'
 params.datapath='data/cora'
 data = gz.dataloader.DataLoader(params)
@@ -50,8 +50,8 @@ model= gz.models.NCModel(params)
 `Trainer` is used to control the training flow:
 
 ```python
-optimizer = gz.optimizers.RiemannianAdam(params=model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
-trainer=gz.trainers.Trainer(args,model,optimizer,data)
+optimizer = gz.optimizers.RiemannianAdam(params=model.parameters(), lr=params.lr, weight_decay=params.weight_decay)
+trainer=gz.trainers.Trainer(params,model,optimizer,data)
 trainer.run()
 trainer.evaluate()
 ```
