@@ -14,7 +14,7 @@ cd GraphZoo
 python setup.py install
 ```
 
-### Using Pypi:
+### Using Pypi (under development, install from source):
 
 ```
 pip install graphzoo
@@ -223,9 +223,9 @@ The included datasets are the following and they need to be downloaded from the 
 
 ## References
 
-[Tutorials](https://github.com/AnoushkaVyas/GraphZoo/tree/main/tutorials)
+[Tutorials](https://github.com/AnoushkaVyas/GraphZoo/tree/main/tutorials) (jupyter notebooks under development)
 
-Documentation
+Documentation (under develpoment)
 
 ## License
 [MIT](https://opensource.org/licenses/MIT)
