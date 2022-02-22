@@ -21,7 +21,7 @@ class BaseModel(nn.Module):
     Input Parameters
     ----------
         'task': ('nc', 'which tasks to train on, can be any of [lp, nc] (type: str)')
-        'model': ('HGCN', 'which encoder to use, can be any of [Shallow, MLP, HNN, GCN, GAT, HGCN] (type: str)')
+        'model': ('HGCN', 'which encoder to use, can be any of [Shallow, MLP, HNN, GCN, GAT, HGCN, HGAT] (type: str)')
         'dim': (128, 'embedding dimension (type: int)')
         'manifold': ('PoincareBall', 'which manifold to use, can be any of [Euclidean, Hyperboloid, PoincareBall] (type: str)')
         'c': (1.0, 'hyperbolic radius, set to None for trainable curvature (type: float)')

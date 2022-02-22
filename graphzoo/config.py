@@ -4,14 +4,14 @@ from graphzoo.utils.train_utils import add_flags_from_config
 
 config_args = {
     'training_config': {
-        'lr': (0.01, 'initial learning rate (type: float)'),
-        'dropout': (0.5, 'dropout probability (type: float)'),
+        'lr': (0.05, 'initial learning rate (type: float)'),
+        'dropout': (0.0, 'dropout probability (type: float)'),
         'cuda': (-1, 'which cuda device to use or -1 for cpu training (type: int)'),
         'device': ('cpu', 'which device to use cuda:$devicenumber for GPU or cpu for CPU (type: str)'),
         'repeat': (10, 'number of times to repeat the experiment (type: int)'),
         'optimizer': ('Adam', 'which optimizer to use, can be any of [Adam, RiemannianAdam, RiemannianSGD] (type: str)'),
         'epochs': (5000, 'maximum number of epochs to train for (type:int)'),
-        'weight-decay': (0.001, 'l2 regularization strength (type: float)'),
+        'weight-decay': (0.0, 'l2 regularization strength (type: float)'),
         'momentum': (0.999, 'momentum in optimizer (type: float)'),
         'patience': (100, 'patience for early stopping (type: int)'),
         'seed': (1234, 'seed for training (type: int)'),
@@ -32,9 +32,9 @@ config_args = {
     },
     'model_config': {
         'task': ('nc', 'which tasks to train on, can be any of [lp, nc] (type: str)'),
-        'model': ('HGCN', 'which encoder to use, can be any of [Shallow, MLP, HNN, GCN, GAT, HGCN] (type: str)'),
+        'model': ('HGCN', 'which encoder to use, can be any of [Shallow, MLP, HNN, GCN, GAT, HGCN,HGAT] (type: str)'),
         'dim': (128, 'embedding dimension (type: int)'),
-        'manifold': ('PoincareBall', 'which manifold to use, can be any of [Euclidean, Hyperboloid, PoincareBall] (type: str)'),
+        'manifold': ('Hyperboloid', 'which manifold to use, can be any of [Euclidean, Hyperboloid, PoincareBall] (type: str)'),
         'c': (1.0, 'hyperbolic radius, set to None for trainable curvature (type: float)'),
         'r': (2.0, 'fermi-dirac decoder parameter for lp (type: float)'),
         't': (1.0, 'fermi-dirac decoder parameter for lp (type: float)'),

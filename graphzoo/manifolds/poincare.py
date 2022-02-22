@@ -1,5 +1,6 @@
 """Poincare ball manifold"""
 import torch
+import scipy.special as sc
 from graphzoo.manifolds.base import Manifold
 from graphzoo.utils.math_utils import artanh, tanh
 from graphzoo.utils.train_utils import broadcast_shapes
@@ -17,7 +18,7 @@ class PoincareBall(Manifold):
     def __init__(self, ):
         super(PoincareBall, self).__init__()
         self.name = 'PoincareBall'
-        self.min_norm = 1e-15
+        self.min_norm = 1e-5
         self.eps = {torch.float32: 4e-3, torch.float64: 1e-5}
 
     def sqdist(self, p1, p2, c):
@@ -147,3 +148,44 @@ class PoincareBall(Manifold):
     def transp(self, x: torch.Tensor, y: torch.Tensor, v: torch.Tensor) -> torch.Tensor:
         target_shape = broadcast_shapes(x.shape, y.shape, v.shape)
         return v.expand(target_shape)
+
+    def from_hyperboloid(self, x, c=1, ideal=False):
+        """Convert from hyperboloid model to Poincare ball model.
+        
+        Note: converting a point from hyperbolic to poincare ball, for a random
+            vector is a not reversivle i.e. p != from_poincare(to_poincare(p)).
+            p must be in hyperbolic plane to satisfy the reversiblity.
+            
+        Args:
+            x: torch.tensor of shape (..., Minkowski_dim), where Minkowski_dim >= 3
+            ideal: boolean. Should be True if the input vectors are ideal points, False otherwise
+        Returns:
+            torch.tensor of shape (..., Minkowski_dim - 1)
+        """
+        if ideal:
+            return x[..., 1:] / (x[..., 0].unsqueeze(-1)).clamp_min(self.min_norm)
+        else:
+            sqrtK = (1. / c) ** 0.5
+            return sqrtK * x[..., 1:] / (sqrtK + x[..., 0].unsqueeze(-1)).clamp_min(self.min_norm)
+    
+    def concat(self, v, c = None):
+        """Concatnates a matrix of dim (M, N) across the last dimension.
+        
+        Note: of the inputs are given as a batch, it assumes that dim (B, M, N)
+            where B is the batch size.
+        
+        The concat operation is based on "Hyperbolic Neural Network++" paper.
+        Args:
+            v: a tensor of dim(M,N) where M is the number of vectors to be 
+               concatnated, and N is the dimension of the vectors.
+               
+        Returns:
+            A tensor of dim(M*N) (or dim(B, M*N in case of batch inputs)) in 
+            the poincare ball of the same radius.
+        """
+        del c
+        concat_dim = 1 if len(v.shape) == 3 else 0
+        a = sc.beta(v.shape[concat_dim]*v.shape[-1]/2, 0.5) / sc.beta(v.shape[-1]/2, 0.5)
+        # Note that the following multiplication should not be a mobius mul. 
+        # It is there to normalize the raduis of the new PoincareBall to <= 1.
+        return torch.cat(tensors=torch.unbind(v*a, dim=concat_dim), dim=concat_dim)

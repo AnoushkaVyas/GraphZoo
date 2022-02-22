@@ -4,7 +4,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from graphzoo.layers.att_layers import GraphAttentionLayer
 from graphzoo.layers.layers import GraphConvolution, Linear
-
+from graphzoo.layers.hyp_att_layers import GraphAttentionLayer as HGraphAttentionLayer
 
 class Decoder(nn.Module):
     """
@@ -70,12 +70,37 @@ class LinearDecoder(Decoder):
                 self.input_dim, self.output_dim, self.bias, self.c
         )
 
+class HGATDecoder(Decoder):
+    """
+    Graph Attention Decoder.
+    """
+
+    def __init__(self, c, args):
+        super(HGATDecoder, self).__init__(c)
+        self.manifold = getattr(manifolds, args.manifold)()
+        self.cls = HGraphAttentionLayer(
+                manifold=self.manifold,
+                input_dim=args.dim, 
+                output_dim=args.n_classes, 
+                dropout=args.dropout, 
+                activation=F.elu, 
+                alpha=args.alpha, 
+                nheads=1, 
+                concat=True,  
+                curvature=self.c, 
+                use_bias= args.bias)
+        self.decode_adj = True
+
+    def decode(self, x, adj):
+        x = super(HGATDecoder, self).decode(x, adj)
+        return self.manifold.proj_tan0(self.manifold.logmap0(x, c=self.c), c=self.c)
 
 model2decoder = {
     'GCN': GCNDecoder,
     'GAT': GATDecoder,
     'HNN': LinearDecoder,
     'HGCN': LinearDecoder,
+    'HGAT': HGATDecoder,
     'MLP': LinearDecoder,
     'Shallow': LinearDecoder
 }

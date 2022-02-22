@@ -100,7 +100,7 @@ Various flags can be modified in the `graphzoo.config` module by the user.
     Input Parameters
     ----------
         'task': ('nc', 'which tasks to train on, can be any of [lp, nc] (type: str)')
-        'model': ('HGCN', 'which encoder to use, can be any of [Shallow, MLP, HNN, GCN, GAT, HGCN] (type: str)')
+        'model': ('HGCN', 'which encoder to use, can be any of [Shallow, MLP, HNN, GCN, GAT, HGCN,HGAT] (type: str)')
         'dim': (128, 'embedding dimension (type: int)')
         'manifold': ('PoincareBall', 'which manifold to use, can be any of [Euclidean, Hyperboloid, PoincareBall] (type: str)')
         'c': (1.0, 'hyperbolic radius, set to None for trainable curvature (type: float)')
@@ -219,13 +219,26 @@ The included datasets are the following and they need to be downloaded from the 
 1. Graph Convolutional Neural Networks (GCN) 
 2. Graph Attention Networks (GAT)
 3. Hyperbolic Graph Convolutions (HGCN) 
+4. Hyperbolic Graph Attention Networks (HGAT)
 
 
-## References
+## Package References
 
 [Tutorials](https://github.com/AnoushkaVyas/GraphZoo/tree/main/tutorials) (jupyter notebooks under development)
 
 Documentation (under develpoment)
+
+## Code References
+
+Some of the code was forked from the following repositories.
+- [hgcn](https://github.com/HazyResearch/hgcn)
+- [hgat](https://github.com/oom-debugger/hyperbolic-layers/tree/8ead8b713fee28f830dd8b33a1468082e0eeae50/py_hnn)
+- [geoopt](https://github.com/geoopt/geoopt)
+- [pygcn](https://github.com/tkipf/pygcn/tree/master/pygcn)
+- [gae](https://github.com/tkipf/gae/tree/master/gae)
+- [hyperbolic-image-embeddings](https://github.com/leymir/hyperbolic-image-embeddings)
+- [pyGAT](https://github.com/Diego999/pyGAT)
+- [poincare-embeddings](https://github.com/facebookresearch/poincare-embeddings)
 
 ## License
 [MIT](https://opensource.org/licenses/MIT)

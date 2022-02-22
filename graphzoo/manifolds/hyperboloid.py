@@ -3,6 +3,7 @@ import torch
 from graphzoo.manifolds.base import Manifold
 from graphzoo.utils.math_utils import arcosh, cosh, sinh 
 from graphzoo.utils.train_utils import broadcast_shapes
+from graphzoo.manifolds.poincare import PoincareBall
 
 class Hyperboloid(Manifold):
     """
@@ -155,3 +156,34 @@ class Hyperboloid(Manifold):
     def transp(self, x: torch.Tensor, y: torch.Tensor, v: torch.Tensor) -> torch.Tensor:
         target_shape = broadcast_shapes(x.shape, y.shape, v.shape)
         return v.expand(target_shape)
+
+    def concat(self, v, c):
+        """
+        Note that the output dimension is (input_dim-1) * n + 1
+        """
+        p = PoincareBall().from_hyperboloid(v, c)
+        p = PoincareBall().concat(p)
+        return Hyperboloid().from_poincare(p, c)
+        
+    def from_poincare(self, x, c=1, ideal=False):
+        """Convert from Poincare ball model to hyperboloid model.
+        
+        Note: converting a point from poincare ball to hyperbolic is 
+            reversible, i.e. p == to_poincare(from_poincare(p)).
+            
+        Args:
+            x: torch.tensor of shape (..., dim)
+            ideal: boolean. Should be True if the input vectors are ideal points, False otherwise
+        Returns:
+            torch.tensor of shape (..., dim+1)
+        To do:
+            Add some capping to make things numerically stable. This is only needed in the case ideal == False
+        """
+        if ideal:
+            t = torch.ones(x.shape[:-1], device=x.device).unsqueeze(-1)
+            return torch.cat((t, x), dim=-1)
+        else:
+            K = 1./ c
+            sqrtK = K ** 0.5
+            eucl_squared_norm = (x * x).sum(dim=-1, keepdim=True)
+            return sqrtK * torch.cat((K + eucl_squared_norm, 2 * sqrtK * x), dim=-1) / (K - eucl_squared_norm).clamp_min(self.min_norm)

@@ -8,7 +8,7 @@ from graphzoo.layers.att_layers import GraphAttentionLayer
 import graphzoo.layers.hyp_layers as hyp_layers
 from graphzoo.layers.layers import GraphConvolution, Linear, get_dim_act
 import graphzoo.utils.math_utils as pmath
-
+from graphzoo.layers.hyp_att_layers import GraphAttentionLayer as HGATlayer
 
 class Encoder(nn.Module):
     """
@@ -181,3 +181,50 @@ class Shallow(Encoder):
         if self.use_feats:
             h = torch.cat((h, x), 1)
         return super(Shallow, self).encode(h, adj)
+
+class HGAT(Encoder):
+    """
+    Hyperbolic Graph Attention Networks.
+    """
+
+    def __init__(self, c, args):
+        super(HGAT, self).__init__(c)
+        assert args.num_layers > 0
+        self.manifold = getattr(manifolds, args.manifold)()
+        dims, acts, self.curvatures = hyp_layers.get_dim_act_curv(args)
+        gat_layers = []
+        for i in range(len(dims) - 1):
+            in_dim, out_dim = dims[i], dims[i + 1]
+            act = acts[i]
+            assert dims[i + 1] % args.n_heads == 0
+            out_dim = dims[i + 1] // args.n_heads
+            concat = True
+            gat_layers.append(
+                    HGATlayer(
+                            manifold=self.manifold,
+                            input_dim=in_dim, 
+                            output_dim=out_dim, 
+                            dropout=args.dropout, 
+                            activation=act, 
+                            alpha=args.alpha, 
+                            nheads=args.n_heads, 
+                            concat=concat, 
+                            curvature=self.curvatures[i], 
+                            use_bias=args.bias))
+
+        self.layers = nn.Sequential(*gat_layers)
+        self.encode_graph = True
+
+    def update_curvature(self, c):
+        self.c = torch.Tensor([c])
+        for idx, _ in enumerate(self.curvatures):
+            self.curvatures[idx] = self.c
+        for layer in self.layers:
+            layer.update_curvature(self.c)
+
+    def encode(self, x, adj):
+        x_tan = self.manifold.proj_tan0(x, self.curvatures[0])
+        x_hyp = self.manifold.expmap0(x_tan, c=self.curvatures[0])
+        x_hyp = self.manifold.proj(x_hyp, c=self.curvatures[0])
+        x = self.manifold.proj(self.manifold.expmap0(self.manifold.proj_tan0(x, self.curvatures[0]), c=self.curvatures[0]), c=self.curvatures[0])
+        return super(HGAT, self).encode(x_hyp, adj)
