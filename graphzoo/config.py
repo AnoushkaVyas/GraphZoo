@@ -34,7 +34,7 @@ config_args = {
         'task': ('nc', 'which tasks to train on, can be any of [lp, nc] (type: str)'),
         'model': ('HGCN', 'which encoder to use, can be any of [Shallow, MLP, HNN, GCN, GAT, HGCN,HGAT] (type: str)'),
         'dim': (128, 'embedding dimension (type: int)'),
-        'manifold': ('Hyperboloid', 'which manifold to use, can be any of [Euclidean, Hyperboloid, PoincareBall] (type: str)'),
+        'manifold': ('PoincareBall', 'which manifold to use, can be any of [Euclidean, Hyperboloid, PoincareBall] (type: str)'),
         'c': (1.0, 'hyperbolic radius, set to None for trainable curvature (type: float)'),
         'r': (2.0, 'fermi-dirac decoder parameter for lp (type: float)'),
         't': (1.0, 'fermi-dirac decoder parameter for lp (type: float)'),
