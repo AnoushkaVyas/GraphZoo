@@ -7,7 +7,6 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from graphzoo.layers.layers import FermiDiracDecoder
-import graphzoo.layers.hyp_layers as hyp_layers
 from graphzoo import manifolds
 import graphzoo.models.encoders as encoders
 from graphzoo.models.decoders import model2decoder
