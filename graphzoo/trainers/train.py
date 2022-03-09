@@ -195,10 +195,14 @@ if __name__ == '__main__':
     ROC for link prediction. Metrics to be averaged can be changed easily in the code.
     """
     args = parser.parse_args()
-    data=DataLoader(args)
     result_list=[]
 
     for i in range(args.repeat):
+        
+        args = parser.parse_args()
+        
+        data=DataLoader(args)
+        
         if args.task=='nc':
             model=NCModel(args)
         else:
