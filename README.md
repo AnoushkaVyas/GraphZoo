@@ -60,7 +60,7 @@ To train a Hyperbolic Graph Convolutional Networks model for node classification
 
 ```python
 cd GraphZoo
-python graphzoo/trainers/train.py --task nc --dataset cora --model HGCN --lr 0.01 --dim 16 --num-layers 2 --act relu --bias 1 --dropout 0.5 --weight-decay 0.001 --manifold PoincareBall --log-freq 5 --cuda 0 --c None
+python graphzoo/trainers/train.py --task nc --dataset cora --datapath <your datapath> --model HGCN --lr 0.01 --dim 16 --num-layers 2 --act relu --bias 1 --dropout 0.5 --weight-decay 0.001 --manifold PoincareBall --log-freq 5 --cuda 0 --c None
 ```
 ## Customizing Input Arguments
 
