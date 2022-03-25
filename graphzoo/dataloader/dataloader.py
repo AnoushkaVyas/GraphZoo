@@ -32,7 +32,7 @@ def DataLoader(args):
     """
     if args.task == 'nc':
         data = load_data_nc(args.dataset, args.use_feats, args.datapath, args.split_seed)
-        args.n_nodes = int(data['labels'].max() + 1)
+        args.n_classes = int(data['labels'].max() + 1)
     else:
         data = load_data_lp(args.dataset, args.use_feats, args.datapath)
         adj = data['adj_train']
@@ -61,9 +61,9 @@ def load_data_lp(dataset, use_feats, data_path):
     if dataset in ['cora', 'citeseer', 'pubmed']:
         adj, features = load_citation_data(dataset, use_feats, data_path)[:2]
     elif dataset == 'ppi':
-        adj, features = load_ppi_data(dataset, use_feats, data_path)[:2]
+        adj, features = load_ppi_data(data_path)[:2]
     elif dataset == 'webkb':
-        adj, features = load_webkb_data(dataset, use_feats, data_path)[:2]
+        adj, features = load_webkb_data(dataset,data_path)[:2]
     elif dataset == 'disease_lp':
         adj, features = load_synthetic_data(dataset, use_feats, data_path)[:2]
     elif dataset == 'airport':
@@ -80,14 +80,13 @@ def load_data_lp(dataset, use_feats, data_path):
 def load_data_nc(dataset, use_feats, data_path, split_seed):
     if dataset in ['cora', 'citeseer', 'pubmed']:
         adj, features, labels, idx_train, idx_val, idx_test =load_citation_data(
-            dataset, use_feats, data_path, split_seed
-        )
+            dataset, use_feats, data_path)
     elif dataset == 'ppi':
-        adj, features, labels = load_ppi_data(dataset, use_feats, data_path)
+        adj, features, labels = load_ppi_data(data_path)
         val_prop, test_prop = 0.15, 0.15
         idx_val, idx_test, idx_train = split_data(labels, val_prop, test_prop, seed=split_seed)
     elif dataset == 'webkb':
-        adj, features, labels = load_webkb_data(dataset, use_feats, data_path)
+        adj, features, labels = load_webkb_data(dataset,data_path)
         val_prop, test_prop = 0.15, 0.15
         idx_val, idx_test, idx_train = split_data(labels, val_prop, test_prop, seed=split_seed)
     else:
