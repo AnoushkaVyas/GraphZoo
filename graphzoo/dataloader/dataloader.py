@@ -32,6 +32,7 @@ def DataLoader(args):
     """
     if args.task == 'nc':
         data = load_data_nc(args.dataset, args.use_feats, args.datapath, args.split_seed)
+        args.n_nodes = int(data['labels'].max() + 1)
     else:
         data = load_data_lp(args.dataset, args.use_feats, args.datapath)
         adj = data['adj_train']
@@ -48,14 +49,21 @@ def DataLoader(args):
     )
     if args.dataset == 'airport':
         data['features'] = augment(data['adj_train'], data['features'])
+
+    args.n_nodes, args.feat_dim = data['features'].shape
+    args.device = 'cuda:' + str(args.cuda) if int(args.cuda) >= 0 else 'cpu'    
     return data
 
 # ############### LINK PREDICTION DATA LOADERS ####################################
 
 
 def load_data_lp(dataset, use_feats, data_path):
-    if dataset in ['cora', 'pubmed']:
+    if dataset in ['cora', 'citeseer', 'pubmed']:
         adj, features = load_citation_data(dataset, use_feats, data_path)[:2]
+    elif dataset == 'ppi':
+        adj, features = load_ppi_data(dataset, use_feats, data_path)[:2]
+    elif dataset == 'webkb':
+        adj, features = load_webkb_data(dataset, use_feats, data_path)[:2]
     elif dataset == 'disease_lp':
         adj, features = load_synthetic_data(dataset, use_feats, data_path)[:2]
     elif dataset == 'airport':
@@ -70,10 +78,18 @@ def load_data_lp(dataset, use_feats, data_path):
 
 
 def load_data_nc(dataset, use_feats, data_path, split_seed):
-    if dataset in ['cora', 'pubmed']:
+    if dataset in ['cora', 'citeseer', 'pubmed']:
         adj, features, labels, idx_train, idx_val, idx_test =load_citation_data(
             dataset, use_feats, data_path, split_seed
         )
+    elif dataset == 'ppi':
+        adj, features, labels = load_ppi_data(dataset, use_feats, data_path)
+        val_prop, test_prop = 0.15, 0.15
+        idx_val, idx_test, idx_train = split_data(labels, val_prop, test_prop, seed=split_seed)
+    elif dataset == 'webkb':
+        adj, features, labels = load_webkb_data(dataset, use_feats, data_path)
+        val_prop, test_prop = 0.15, 0.15
+        idx_val, idx_test, idx_train = split_data(labels, val_prop, test_prop, seed=split_seed)
     else:
         if dataset == 'disease_nc':
             adj, features, labels = load_synthetic_data(dataset, use_feats, data_path)
@@ -133,6 +149,33 @@ def augment(adj, features, normalize_feats=True):
     features = torch.cat((features, deg_onehot, const_f), dim=1)
     return features
 
+def encode_onehot(labels):
+    # The classes must be sorted before encoding to enable static class encoding.
+    # In other words, make sure the first class always maps to index 0.
+    classes = sorted(list(set(labels)))
+    classes_dict = {c: np.identity(len(classes))[i, :] for i, c in enumerate(classes)}
+    labels_onehot = list(map(classes_dict.get, labels))# np.array(, dtype=np.int32)
+    labels_index = list(list(i).index(1) for i in labels_onehot)
+    return np.array(labels_index, dtype=np.int32)# labels_onehot
+
+
+def normalize_adj(mx):
+    """Row-normalize sparse matrix"""
+    rowsum = np.array(mx.sum(1))
+    r_inv_sqrt = np.power(rowsum, -0.5).flatten()
+    r_inv_sqrt[np.isinf(r_inv_sqrt)] = 0.
+    r_mat_inv_sqrt = sp.diags(r_inv_sqrt)
+    return mx.dot(r_mat_inv_sqrt).transpose().dot(r_mat_inv_sqrt)
+
+
+def normalize_features(mx):
+    """Row-normalize sparse matrix"""
+    rowsum = np.array(mx.sum(1))
+    r_inv = np.power(rowsum, -1).flatten()
+    r_inv[np.isinf(r_inv)] = 0.
+    r_mat_inv = sp.diags(r_inv)
+    mx = r_mat_inv.dot(mx)
+    return mx
 
 # ############### DATA SPLITS #####################################################
 
@@ -181,7 +224,7 @@ def split_data(labels, val_prop, test_prop, seed):
 
 # ############### DATASETS ####################################
 
-def load_citation_data(dataset_str, use_feats, data_path, split_seed=None):
+def load_citation_data(dataset_str, use_feats, data_path):
     names = ['x', 'y', 'tx', 'ty', 'allx', 'ally', 'graph']
     objects = []
     for i in range(len(names)):
@@ -194,6 +237,17 @@ def load_citation_data(dataset_str, use_feats, data_path, split_seed=None):
     x, y, tx, ty, allx, ally, graph = tuple(objects)
     test_idx_reorder = parse_index_file(os.path.join(data_path, "ind.{}.test.index".format(dataset_str)))
     test_idx_range = np.sort(test_idx_reorder)
+
+    if dataset_str == 'citeseer':
+        # Fix citeseer dataset (there are some isolated nodes in the graph)
+        # Find isolated nodes, add them as zero-vecs into the right position
+        test_idx_range_full = range(min(test_idx_reorder), max(test_idx_reorder)+1)
+        tx_extended = sp.lil_matrix((len(test_idx_range_full), x.shape[1]))
+        tx_extended[test_idx_range-min(test_idx_range), :] = tx
+        tx = tx_extended
+        ty_extended = np.zeros((len(test_idx_range_full), y.shape[1]))
+        ty_extended[test_idx_range-min(test_idx_range), :] = ty
+        ty = ty_extended
 
     features = sp.vstack((allx, tx)).tolil()
     features[test_idx_reorder, :] = features[test_idx_range, :]
@@ -266,3 +320,34 @@ def load_data_airport(dataset_str, data_path, return_label=False):
         return sp.csr_matrix(adj), features, labels
     else:
         return sp.csr_matrix(adj), features
+
+def load_ppi_data(data_path):
+    features_ppi=np.load(data_path+"/features.npy")
+    edges=np.loadtxt(data_path+"/edges.txt")
+    labels = np.loadtxt(data_path+"/node2label.txt",delimiter=" ")
+    labels = labels[:,1]
+    adj = np.zeros((len(features_ppi), len(features_ppi)))
+    for item in edges:
+        adj[int(list(item)[0]), int(list(item)[1])] = 1.
+        adj[int(list(item)[1]), int(list(item)[0])] = 1.
+    graph = nx.from_numpy_matrix(adj)
+    global G
+    G = graph
+    return sp.csr_matrix(adj), features_ppi, labels
+
+def load_webkb_data(dataset,data_path):
+    idx_features_labels = np.genfromtxt("{}/{}.content".format(data_path, dataset), dtype=np.dtype(str))
+    features = sp.csr_matrix(idx_features_labels[:, 1:-1], dtype=np.float32)
+    labels = encode_onehot(idx_features_labels[:, -1])
+    idx = np.array(idx_features_labels[:, 0], dtype=np.int32)
+    idx_map = {j: i for i, j in enumerate(idx)}
+    edges_unordered = np.genfromtxt("{}/{}.cites".format(data_path, dataset), dtype=np.int32)
+    edges = np.array(list(map(idx_map.get, edges_unordered.flatten())), dtype=np.int32).reshape(edges_unordered.shape)
+    adj = sp.coo_matrix((np.ones(edges.shape[0]), (edges[:, 0], edges[:, 1])), shape=(labels.shape[0], labels.shape[0]), dtype=np.float32)
+    adj = adj + adj.T.multiply(adj.T > adj) - adj.multiply(adj.T > adj)
+    features = normalize_features(features)
+    adj = normalize_adj(adj + sp.eye(adj.shape[0]))
+    graph = nx.from_numpy_matrix(np.array(adj.todense()))
+    global G
+    G = graph
+    return adj, features, labels 

@@ -7,7 +7,6 @@ config_args = {
         'lr': (0.05, 'initial learning rate (type: float)'),
         'dropout': (0.0, 'dropout probability (type: float)'),
         'cuda': (-1, 'which cuda device to use or -1 for cpu training (type: int)'),
-        'device': ('cpu', 'which device to use cuda:$devicenumber for GPU or cpu for CPU (type: str)'),
         'repeat': (10, 'number of times to repeat the experiment (type: int)'),
         'optimizer': ('Adam', 'which optimizer to use, can be any of [Adam, RiemannianAdam, RiemannianSGD] (type: str)'),
         'epochs': (5000, 'maximum number of epochs to train for (type:int)'),
@@ -45,13 +44,10 @@ config_args = {
         'n-heads': (4, 'number of attention heads for graph attention networks, must be a divisor dim (type: int)'),
         'alpha': (0.2, 'alpha for leakyrelu in graph attention networks (type: float)'),
         'use-att': (0, 'whether to use hyperbolic attention (1) or not (0) (type: int)'),
-        'local-agg': (0, 'whether to local tangent space aggregation (1) or not (0) (type: int)'),
-        'n_classes': (7, 'number of classes in the dataset (type: int)'),
-        'n_nodes': (2708, 'number of nodes in the graph (type: int)'), 
-        'feat_dim': (1433, 'feature dimension of the dataset (type: int)') 
+        'local-agg': (0, 'whether to local tangent space aggregation (1) or not (0) (type: int)')
     },
     'data_config': {
-        'dataset': ('cora', 'which dataset to use, can be any of [cora, pubmed, airport, disease_nc, disease_lp] (type: str)'),
+        'dataset': ('cora', 'which dataset to use, can be any of [cora, pubmed, airport, disease_nc, disease_lp, ppi, citeseer, webkb] (type: str)'),
         'datapath': (None, 'path to raw data (type: str)'),
         'val-prop': (0.05, 'proportion of validation edges for link prediction (type:float)'),
         'test-prop': (0.1, 'proportion of test edges for link prediction (type: float)'),
