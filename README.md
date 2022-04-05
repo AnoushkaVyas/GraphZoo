@@ -245,7 +245,7 @@ Some of the code was forked from the following repositories.
 ## Citation
 If you use GraphZooZoo in your research, please use the following BibTex entry.
 
-'''
+```
 @inproceedings{10.1145/3487553.3524241,
 author = {Anoushka Vyas, Nurendra Choudhary, Mehrdad Khatir, Chandan K. Reddy},
 title = {GraphZoo: A Development Toolkit for Graph Neural Networks with Hyperbolic Geometries},
@@ -260,7 +260,7 @@ keywords = {graph learning, graph neural network, hyperbolic models, software},
 location = {Lyon, France},
 series = {WWW '22}
 }
-'''
+```
 
 
 ## License
