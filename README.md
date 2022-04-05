@@ -242,6 +242,26 @@ Some of the code was forked from the following repositories.
 
 ## Model References
 
+## Citation
+If you use GraphZooZoo in your research, please use the following BibTex entry.
+
+'''
+@inproceedings{10.1145/3487553.3524241,
+author = {Anoushka Vyas, Nurendra Choudhary, Mehrdad Khatir, Chandan K. Reddy},
+title = {GraphZoo: A Development Toolkit for Graph Neural Networks with Hyperbolic Geometries},
+year = {2022},
+isbn = {9781450391306},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3487553.3524241},
+doi = {10.1145/3487553.3524241},
+booktitle = {Companion Proceedings of the Web Conference 2022},
+keywords = {graph learning, graph neural network, hyperbolic models, software},
+location = {Lyon, France},
+series = {WWW '22}
+}
+'''
+
 
 ## License
 [MIT](https://opensource.org/licenses/MIT)
